@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --text: #000000;
+    --background: #ffffff;
+    --primary: #e7e6e6;
+    --accent: #0070f0;
+  }
+  .dark {
+    --text: #ffffff;
+    --background: #000000;
+    --primary: #333333;
+    --accent: #00067f;
+  }
+}
+
+.main_wrapper {
+  @apply w-screen  h-auto min-h-screen flex justify-center  bg-[var(--background)] text-[var(--text)];
+}
+
+.component_container {
+  @apply mx-auto flex w-full max-w-[850px];
+}
+
+.page_wrapper {
+  @apply mx-auto flex justify-center p-6 w-full h-screen max-w-[850px];
+}
+
+.home_wrapper {
+  @apply mx-auto flex  px-5 items-center w-full h-auto max-w-[850px];
+}
+
+.form_wrapper {
+  @apply mx-auto flex justify-center p-6 w-full h-screen max-w-[650px];
+}
+
+.create_post_wrapper {
+  @apply mx-auto w-full h-screen items-center flex flex-col;
+}
+
+.component_outer {
+  @apply flex flex-col w-full h-full;
+}

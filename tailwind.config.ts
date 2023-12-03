@@ -1,20 +1,55 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
+import { nextui } from "@nextui-org/theme";
 
 const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      colors: {
+        "bf-text": "var(--text)",
+        "bf-bg": "var(--background)",
+        "bf-primary": "var(--primary)",
+        "bf-accent": "var(--accent)",
       },
     },
   },
-  plugins: [],
-}
-export default config
+  darkMode: "class",
+  plugins: [
+    nextui({
+      themes: {
+        dark: {
+          colors: {
+            primary: {
+              DEFAULT: "#00067f",
+              foreground: "#ffffff",
+            },
+            secondary: {
+              DEFAULT: "#333333",
+              foreground: "#ffffff",
+            },
+            focus: "#00067f",
+            foreground: "#ffffff",
+          },
+        },
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: "#0070F0",
+              foreground: "#ffffff",
+            },
+            secondary: {
+              DEFAULT: "#e7e6e6",
+              foreground: "#ffffff",
+            },
+          },
+        },
+      },
+    }),
+  ],
+};
+export default config;
