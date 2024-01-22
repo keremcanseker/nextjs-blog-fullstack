@@ -6,10 +6,10 @@ interface PostCardProps {
     title: string;
     summary: string;
     content: string;
-    category: string[];
+    category?: string[] | string;
     image: string;
   };
-  id: string;
+  id?: string;
 }
 
 export default function PostCard({
@@ -30,7 +30,7 @@ export default function PostCard({
         <div className="">
           <Image src={imageUrl} width={400}></Image>
         </div>
-        <div className="flex flex-col  w-[450px]">
+        <div className="flex flex-col w-full">
           <h1 className="text-2xl font-bold">{title}</h1>
           <p className="font-semibold">{category}</p>
           <p>{summary}</p>

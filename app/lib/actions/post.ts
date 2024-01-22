@@ -1,5 +1,7 @@
 "use server";
-import createSupabaseClient from "../supabase/client";
+import createSupabaseClient, {
+  createSupabaseClientForStart,
+} from "../supabase/client";
 
 import {
   S3Client,
@@ -22,14 +24,14 @@ export async function createPost({ data }: { data: FormData }) {
 }
 
 export async function getPosts() {
-  const supabase = await createSupabaseClient();
+  const supabase = await createSupabaseClientForStart();
   const result = supabase.from("post").select("*");
 
   return result;
 }
 
 export async function getPost({ postId }: { postId: string }) {
-  const supabase = await createSupabaseClient();
+  const supabase = await createSupabaseClientForStart();
 
   const { data, error } = await supabase
     .from("post")
@@ -60,6 +62,50 @@ export async function deletePost({ postId }: { postId: string }) {
   return result;
 }
 
+export async function getImageLinkforProfile({
+  formData,
+}: {
+  formData: FormData;
+}) {
+  const userName = "kerem";
+  const fileBuffer = formData.get("file") as File;
+  const buffer = Buffer.from(await fileBuffer?.arrayBuffer());
+  const newFileName = `${userName}-${Date.now().toString()}.${
+    fileBuffer?.type.split("/")[1]
+  }`;
+  const params = {
+    Bucket: "krmcnskrnew-blog-fusion",
+    Key: newFileName,
+    Body: buffer,
+    ContentType: fileBuffer?.type,
+    ACL: "public-read" as ObjectCannedACL,
+  };
+
+  const s3 = new S3Client({
+    region: "us-east-1",
+
+    credentials: {
+      accessKeyId: process.env.S3_ACCESSKEY_NEW || "",
+      secretAccessKey: process.env.S3_SECRET_NEW || "",
+    },
+  });
+  const url = `https://krmcnskrnew-blog-fusion.s3.amazonaws.com/${newFileName}`;
+  try {
+    const data = await s3.send(new PutObjectCommand({ ...params }));
+    console.log("Image upload successful");
+    return {
+      success: true,
+      url: url,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      url: "",
+    };
+  }
+}
+
 // create image
 export async function getImageLink({ formData }: { formData: FormData }) {
   // console.log("yeni image request ");
@@ -75,7 +121,7 @@ export async function getImageLink({ formData }: { formData: FormData }) {
   const newFileName = `${title}-${Date.now().toString()}.${
     fileBuffer?.type.split("/")[1]
   }`;
-  console.log(newFileName);
+  // console.log(newFileName);
 
   const params = {
     Bucket: "krmcnskrnew-blog-fusion",

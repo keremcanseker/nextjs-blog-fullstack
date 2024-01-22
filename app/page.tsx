@@ -1,7 +1,7 @@
 "use server";
 import { getUserSession } from "./lib/auth/page";
-import Home from "./components/Home";
-import Welcome from "./components/Welcome";
+import Home from "./components/(Root)/Home";
+import Welcome from "./components/(Root)/Welcome";
 
 const Page: React.FC = async () => {
   const { data } = await getUserSession();

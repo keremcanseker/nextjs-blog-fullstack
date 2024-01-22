@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Progress } from "@nextui-org/react";
-import { createPost, getPost } from "@/app/lib/crud/post";
+import { createPost, getPost } from "@/app/lib/actions/post";
 import Link from "next/link";
 import Title from "./components/Title";
 import Category from "./components/Category";
@@ -95,7 +95,7 @@ const CreatePost: React.FC = () => {
     try {
       const result = await createPost({ data: data });
       router.push(`/`);
-      console.log(result);
+      // console.log(result);
     } catch (error) {
       alert(error);
     }

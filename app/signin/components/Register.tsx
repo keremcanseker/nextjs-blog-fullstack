@@ -1,69 +1,49 @@
 "use client";
 import { Button, Link, Input } from "@nextui-org/react";
 import { useState } from "react";
-import { ToastContainer, toast, Flip } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { IoArrowBack } from "react-icons/io5";
 import { useThemeStore } from "@/app/utils/ThemeStore";
 import { useLogInStore } from "@/app/utils/LogInStore";
 import signUpWithEmail from "@/app/lib/auth/page";
 import { useRouter } from "next/navigation";
-import clsx from "clsx";
+
+import {
+  ToastContainerComponent,
+  showToastError,
+  showToastSuccess,
+} from "@/app/components/Toaster";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
   const { setRegister } = useLogInStore();
   const router = useRouter();
   const { theme } = useThemeStore();
-
-  const showToastSuccess = () => {
-    toast.success("You have sucessfully registered!", {
-      position: "bottom-center",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      transition: Flip,
-      theme: theme,
-    });
-  };
-
-  const showToastError = (err: string) => {
-    toast.error(`${err}`, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: theme,
-    });
-  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
       // Make an API request to your server to register the user
-      const result = await signUpWithEmail({ email, password });
+      const result = await signUpWithEmail({
+        email,
+        password,
+        username: userName,
+      });
       const response = JSON.parse(result);
       // if there is no error show success toast
       if (!response.message) {
-        showToastSuccess();
+        showToastSuccess({ message: "Registeration successful", theme: theme });
         setTimeout(() => {
           router.push("/");
         }, 1500);
       }
       if (response.message) {
-        showToastError(response.message);
+        showToastError({ message: response.message, theme: theme });
       }
     } catch (error) {
-      // Handle API request error, e.g., display an error message
-      console.error("Registration error:", error);
-      showToastError("Registeration failed");
+      showToastError({ message: "Registeration failed", theme: theme });
     }
   };
 
@@ -76,10 +56,19 @@ const Register: React.FC = () => {
             onClick={() => {
               setRegister(false);
             }}
-            className="text-xl mb-6 "
+            className="text-lg mb-5"
           >
-            Turn Login
+            <IoArrowBack className="inline-block " />
+            Login
           </Link>
+          <Input
+            type="username"
+            label="Username"
+            radius="sm"
+            className="mb-6"
+            value={userName}
+            onChange={(ev) => setUserName(ev.target.value)}
+          />
           <Input
             type="email"
             label="Email"
@@ -105,7 +94,7 @@ const Register: React.FC = () => {
           >
             Register
           </Button>
-          <ToastContainer />
+          <ToastContainerComponent />
         </form>
       </div>
     </section>

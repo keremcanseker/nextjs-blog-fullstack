@@ -12,7 +12,7 @@ export default async function createSupabaseClient() {
       get(name: string) {
         return cookieStore.get(name)?.value;
       },
-      set(name: string, value: string, options: CookieOptions) {
+      set(name: string, value: string, options: CookieOptions): void {
         cookieStore.set({ name, value, ...options });
       },
       remove(name: string, options: CookieOptions) {
@@ -22,4 +22,21 @@ export default async function createSupabaseClient() {
   });
 }
 
-export async function textSupabase() {}
+export async function createSupabaseClientForStart() {
+  const cookieStore = cookies();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      get(name: string) {
+        return cookieStore.get(name)?.value;
+      },
+      // set(name: string, value: string, options: CookieOptions): void {
+      //   cookieStore.set({ name, value, ...options });
+      // },
+      // remove(name: string, options: CookieOptions) {
+      //   cookieStore.set({ name, value: "", ...options });
+      // },
+    },
+  });
+}

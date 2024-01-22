@@ -1,11 +1,27 @@
 import { create } from "zustand";
+import { persist, StateStorage } from "zustand/middleware";
 
 interface ThemeState {
   theme: "light" | "dark";
   setTheme: (theme: "light" | "dark") => void;
 }
 
-export const useThemeStore = create<ThemeState>((set) => ({
-  theme: "light",
-  setTheme: (theme) => set({ theme }),
-}));
+export const useThemeStore = create(
+  persist<ThemeState>(
+    (set) => {
+      const prefersDarkMode = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      const defaultTheme: "light" | "dark" = prefersDarkMode ? "dark" : "light";
+
+      return {
+        theme: defaultTheme,
+        setTheme: (theme) => set({ theme }),
+      };
+    },
+    {
+      name: "theme-storage",
+      getStorage: () => localStorage as StateStorage, // Specify the type of storage
+    }
+  )
+);

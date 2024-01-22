@@ -3,7 +3,7 @@ import { Input } from "@nextui-org/react";
 import { BsUpload } from "react-icons/bs";
 import { useState } from "react";
 import { Image } from "@nextui-org/react";
-import { getImageLink } from "@/app/lib/crud/post";
+import { getImageLink } from "@/app/lib/actions/post";
 interface UploadImageProps {
   onChange: (value: Object) => void;
   formData: string;

@@ -1,44 +1,49 @@
 "use server";
 
-import createSupabaseClient from "../supabase/client";
+import createSupabaseClient, {
+  createSupabaseClientForStart,
+} from "../supabase/client";
 
 // SIGNUP WITH EMAIL
 export default async function signUpWithEmail({
   email,
   password,
+  username,
 }: {
   email: string;
   password: string;
+  username: string;
 }) {
   const supabase = await createSupabaseClient();
-  const result = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
 
-  // bu kod user tablsouna idyi ekliyordu fakat bunu supabase tarafinda yapiyoruz artik
-  // const user_id = result.data.user?.id;
-  // const appendUser = await createUser({ data: { email, user_id } });
-  // console.log(appendUser);
+  const user_id = data.user?.id;
 
-  if (result.error) {
-    console.log(result.error.message);
-    return JSON.stringify(result.error);
+  const result = await supabase
+    .from("user")
+    .insert([{ user_name: username, user_id: user_id, email: email }]);
+
+  if (error) {
+    console.log(error.message);
+    return JSON.stringify(error);
   }
-  // console.log(result.error?.error);
-  return JSON.stringify(result);
+
+  return JSON.stringify(data);
 }
 
 // GET SESSION
 export async function getUserSession() {
-  const supabase = await createSupabaseClient();
-
+  const supabase = await createSupabaseClientForStart();
   return await supabase.auth.getSession();
 }
 
 // LOGOUT
 export async function logOut() {
   const supabase = await createSupabaseClient();
+  console.log("test");
   return await supabase.auth.signOut();
 }
 
@@ -63,4 +68,19 @@ export async function signInWithEmail({
   }
   // console.log(result.error?.error);
   return JSON.stringify(result);
+}
+
+// get user data with id
+export async function getUserWithId(id: string) {
+  const supabase = await createSupabaseClient();
+  const data = await supabase.from("user").select("*").eq("user_id", id);
+  // console.log(data);
+  return data;
+}
+
+// get user id from session
+export async function getUserIdFromCurrentSession() {
+  const supabase = await createSupabaseClientForStart();
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user.id;
 }
