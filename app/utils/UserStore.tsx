@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { renderURL } from "../types/page";
+import { renderURL } from "../types/post";
 
 interface UserState {
   isLoggedIn: boolean;

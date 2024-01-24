@@ -108,7 +108,7 @@ const CreatePost: React.FC = () => {
   }, []);
 
   return (
-    <section className="create_post_wrapper ">
+    <section className="create_post_wrapper">
       <div className="h-screen w-full flex flex-col p-5 justify-between items-center max-w-[80rem]">
         <Link href="/">
           <h1 className="text-4xl text-center">Enlighten Us</h1>

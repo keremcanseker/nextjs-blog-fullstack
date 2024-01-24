@@ -3,7 +3,7 @@ import { getUser, getUserPosts, getUserProfile } from "../lib/actions/user";
 import { ZodType } from "zod";
 import { z } from "zod";
 import PostCard from "../components/(Post)/PostCard";
-import { PostDataSchema, PostData } from "../types/page";
+import { PostDataSchema, PostData } from "../types/post";
 
 type ProfileData = {
   profile_pic?: string;

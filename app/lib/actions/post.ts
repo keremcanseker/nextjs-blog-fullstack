@@ -35,8 +35,10 @@ export async function getPost({ postId }: { postId: string }) {
 
   const { data, error } = await supabase
     .from("post")
-    .select("content")
+    .select("content, created_at, user_id")
     .eq("post_id", postId);
+
+  
 
   if (error) {
     // Handle the error, for example, log it or throw an exception
@@ -44,10 +46,27 @@ export async function getPost({ postId }: { postId: string }) {
     throw new Error("Error fetching data");
   }
 
+  // get the fullname using user_id
+  const { data: userData, error: userError } = await supabase
+    .from("user")
+    .select("fullName")
+    .eq("user_id", data[0].user_id);
+
+  if (userError) {
+    console.log(userData)
+    console.error("Error fetching user data:", userError);
+    throw new Error("Error fetching user data");
+  }
+
+  
+
   // Check if data is not null before accessing its properties
   if (data && data.length > 0 && data[0].content) {
     // parse the data to JSON
     let newData = JSON.parse(data[0].content);
+    // append the created_at property at the top level
+    newData.created_at = data[0].created_at;
+    newData.author = userData[0].fullName;
     return newData;
   } else {
     // Handle the case where data is null or empty

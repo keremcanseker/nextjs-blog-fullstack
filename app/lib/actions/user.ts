@@ -4,7 +4,7 @@ import { getUserIdFromCurrentSession } from "../auth/page";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";
-import { PostData, PostDataSchema } from "@/app/types/page";
+import { PostData, PostDataSchema } from "@/app/types/post";
 
 //unused
 export async function createUser({ data }: { data: any }) {
@@ -98,4 +98,16 @@ export async function getUserProfileImage() {
     .single();
 
   return data;
+}
+
+export async function getUserProfileName() {
+  const userId = await getUserIdFromCurrentSession();
+  const supabase = await createSupabaseClientForStart();
+  const { data, error } = await supabase
+    .from("user")
+    .select("user_name")
+    .eq("user_id", userId)
+    .single();
+
+  return data?.user_name || "";
 }

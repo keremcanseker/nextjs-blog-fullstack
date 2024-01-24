@@ -4,11 +4,13 @@ import Link from "next/link";
 import { randomBytes } from "crypto";
 import { Divider } from "@nextui-org/react";
 
+
 export default async function Posts() {
   const { data: posts } = await getPosts();
 
   return (
-    <div className="flex-col w-full  max-w-[52rem] flex gap-6">
+    <div className="flex-col w-full  max-w-[52rem] flex gap-6">\
+
       {posts?.map((post, index) => {
         const content = JSON.parse(post.content);
         return (
