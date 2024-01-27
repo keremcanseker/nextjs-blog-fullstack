@@ -9,7 +9,7 @@ import {
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
 
-export async function createPost({ data }: { data: FormData }) {
+export async function postPost({ data }: { data: FormData }) {
   const supabase = await createSupabaseClient();
   const id = (await supabase.auth.getUser()).data.user?.id;
   // console.log(id);
@@ -38,8 +38,6 @@ export async function getPost({ postId }: { postId: string }) {
     .select("content, created_at, user_id")
     .eq("post_id", postId);
 
-  
-
   if (error) {
     // Handle the error, for example, log it or throw an exception
     console.error("Error fetching data:", error);
@@ -53,20 +51,30 @@ export async function getPost({ postId }: { postId: string }) {
     .eq("user_id", data[0].user_id);
 
   if (userError) {
-    console.log(userData)
+    console.log(userData);
     console.error("Error fetching user data:", userError);
     throw new Error("Error fetching user data");
   }
-
-  
 
   // Check if data is not null before accessing its properties
   if (data && data.length > 0 && data[0].content) {
     // parse the data to JSON
     let newData = JSON.parse(data[0].content);
+
+    // Extract keywords from newData and add them to an array
+    const keywordsArray = [];
+    for (const key in newData) {
+      if (key.startsWith("keywords[") && typeof newData[key] === "string") {
+        const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
+        keywordsArray.push(cleanedKeyword);
+      }
+    }
+
     // append the created_at property at the top level
     newData.created_at = data[0].created_at;
     newData.author = userData[0].fullName;
+    newData.keywords = keywordsArray;
+
     return newData;
   } else {
     // Handle the case where data is null or empty

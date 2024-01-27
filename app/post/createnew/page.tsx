@@ -12,7 +12,8 @@ import { createPost, createPostSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getImageLink } from "@/app/lib/actions/post";
 import { BsUpload } from "react-icons/bs";
-import { use, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import "froala-editor/css/froala_style.min.css";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/plugins/code_view.min.css";
@@ -25,17 +26,49 @@ import { formatDate } from "@/app/lib/actions/helpers";
 import FroalaEditor from "react-froala-wysiwyg";
 import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 import { getUserProfileName } from "@/app/lib/actions/user";
+import { postPost } from "@/app/lib/actions/post";
+import { showToastError, showToastSuccess } from "@/app/components/Toaster";
+import { useThemeStore } from "@/app/utils/ThemeStore";
 
 const CreateNewPostPage: React.FC = () => {
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     watch,
   } = useForm<createPost>({
     resolver: zodResolver(createPostSchema),
   });
+  const { theme } = useThemeStore();
+
+  const onDrop = async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const data = new FormData();
+      data.append("file", acceptedFiles[0]);
+
+      try {
+        setImageLoading(true);
+        const response = await getImageLink({ formData: data });
+        setImageUrl(response.url);
+        setValue("image", response.url);
+        setImageLoading(false);
+      } catch (error) {
+        setImageLoading(false);
+        console.error("Error uploading image:", error);
+      }
+    }
+  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: {
+      "image/png": [".png"],
+      "image/jpg": [".jpg"],
+      "image/jpeg": [".jpeg"],
+    },
+  });
+
   const watchedFields = watch();
   const [imageUrl, setImageUrl] = useState("");
   const [imageLoading, setImageLoading] = useState(false);
@@ -45,40 +78,27 @@ const CreateNewPostPage: React.FC = () => {
     const keywordsArray = data.keywords
       .split(" ")
       .filter((keyword) => keyword.trim() !== "");
-    console.log(keywordsArray);
-    const formData = {
-      ...data,
-      keywords: keywordsArray,
-    };
 
-    alert(JSON.stringify(data));
-    console.log(JSON.stringify(data));
-  };
+    // Create a FormData instance
+    const formData = new FormData();
 
-  const handleImageUpload = async () => {
-    const fileInput = document.getElementById("upload") as HTMLInputElement;
-    fileInput?.click();
+    // Append your data to the FormData instance
+    formData.append("title", data.title);
+    formData.append("summary", data.summary);
+    formData.append("image", data.image);
+    formData.append("content", data.content || ""); // Optional, depends on your API
 
-    fileInput?.addEventListener("change", async (e) => {
-      e.preventDefault();
-      const files = fileInput.files;
-      if (files) {
-        const data = new FormData();
-        data.append("file", files[0]);
-        // data.append("title", imageTitle);
-
-        try {
-          setImageLoading(true);
-          const response = await getImageLink({ formData: data });
-          setImageUrl(response.url);
-          setValue("image", response.url);
-          setImageLoading(false);
-        } catch (error) {
-          setImageLoading(false);
-          console.error("Error uploading image:", error);
-        }
-      }
+    // Append each keyword individually
+    keywordsArray.forEach((keyword, index) => {
+      formData.append(`keywords[${index}]`, keyword);
     });
+
+    try {
+      const response = await postPost({ data: formData });
+      showToastSuccess({ message: "Post created successfully", theme: theme });
+    } catch (error) {
+      showToastError({ message: "Error creating post", theme: theme });
+    }
   };
 
   useEffect(() => {
@@ -93,8 +113,7 @@ const CreateNewPostPage: React.FC = () => {
 
     fetchAuthorName();
   }, []);
-  // const createpostwrapperstyle = ``;
-  // const createPostFormStyle = ``;
+
   return (
     <section
       className={`flex justify-between min-w-screen p-[3rem] gap-[120px]`}
@@ -106,29 +125,28 @@ const CreateNewPostPage: React.FC = () => {
         <h1 className="font-bold text-2xl">Fill your post</h1>
 
         <p className="text-xl">Upload a cover image</p>
-        <div className="flex w-full flex-col  justify-start">
-          <Button
-            size="lg"
-            className="text-lg w-3 text-center justify-center  items-center mb-2"
-            variant="ghost"
-            color="primary"
-            radius="md"
-            spinner={
-              <CircularProgress size="sm" color="primary" className="mr-2" />
-            }
-            spinnerPlacement="end"
-            isLoading={imageLoading}
-            onClick={() => {
-              handleImageUpload();
-            }}
+        <div className="flex w-full flex-col justify-start">
+          <div
+            {...getRootProps()}
+            className={`p-4 border-2 border-dashed rounded-md ${
+              isDragActive ? "border-blue-500" : "border-gray-300"
+            }`}
           >
-            <BsUpload className="" />
-          </Button>
-          <Input type="file" className="hidden" id="upload"></Input>
+            <input {...getInputProps()} />
+            <p className="text-lg">
+              {imageLoading ? (
+                <CircularProgress size="sm" color="primary" />
+              ) : (
+                <p className="text-lg">
+                  Drop or click to upload an image
+                  <BsUpload size="1.5rem" className="inline-block ml-2" />
+                </p>
+              )}
+            </p>
+          </div>
           {errors.image?.message && (
             <p className="text-red-500">{errors.image?.message}</p>
           )}
-          {/* {imageUrl.length > 0 && <Image src={imageUrl} className="" />} */}
         </div>
         <Input
           {...register("title", { required: true })}
@@ -171,7 +189,6 @@ const CreateNewPostPage: React.FC = () => {
           config={{
             placeholderText: "Edit Your Content Here!",
             imageUpload: false,
-            colorsBackground: ["#f321f3"],
           }}
           // {...register("content", { required: true })}
         ></FroalaEditor>
@@ -179,7 +196,15 @@ const CreateNewPostPage: React.FC = () => {
           <p className="text-red-500">{errors.content?.message}</p>
         )}
         {/* </label> */}
-        <Button type="submit" className="" color="primary" radius="sm">
+        <Button
+          type="submit"
+          className=""
+          color="primary"
+          radius="sm"
+          spinner={<CircularProgress size="sm" color="primary" />}
+          spinnerPlacement="end"
+          isLoading={isSubmitting}
+        >
           Submit
         </Button>
       </form>

@@ -72,7 +72,7 @@ export async function getUserProfile() {
   return data;
 }
 //: Promise<PostData[]>
-export async function getUserPosts(): Promise<PostData[]> {
+export async function getUserPosts() {
   const userId = await getUserIdFromCurrentSession();
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
@@ -80,8 +80,18 @@ export async function getUserPosts(): Promise<PostData[]> {
     .select("content, post_id")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
+
   const result = data?.map((post) => {
     const newData = JSON.parse(post.content);
+    const keywordsArray = [];
+    for (const key in newData) {
+      if (key.startsWith("keywords[") && typeof newData[key] === "string") {
+        const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
+        keywordsArray.push(cleanedKeyword);
+      }
+    }
+    newData.keywords = keywordsArray;
+
     return { post_id: post.post_id, ...newData };
   });
   return result!;
