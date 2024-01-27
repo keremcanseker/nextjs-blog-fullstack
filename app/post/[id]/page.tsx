@@ -6,6 +6,7 @@ import CustomNav from "@/app/components/CustomNav";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { checkIfPostBelongsToCurrentUser } from "@/app/lib/auth/page";
+import Link from "next/link";
 import { MdOutlineVisibility } from "react-icons/md";
 const dateOptions: Intl.DateTimeFormatOptions = {
   weekday: "long",
@@ -42,6 +43,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                   className="text-xl"
                   variant="faded"
                 >
+                  <Link href={`/post/edit?id=${params.id}`}></Link>
                   <FiEdit></FiEdit>
                 </Button>
                 <Button
@@ -50,7 +52,9 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                   className="text-xl"
                   variant="faded"
                 >
-                  <MdOutlineVisibility></MdOutlineVisibility>
+                  <Link href={`/post/visibility?id=${params.id}`}>
+                    <MdOutlineVisibility></MdOutlineVisibility>
+                  </Link>
                 </Button>
                 <Button
                   isIconOnly
@@ -58,7 +62,9 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                   className="text-xl"
                   variant="faded"
                 >
-                  <MdOutlineDeleteOutline></MdOutlineDeleteOutline>
+                  <Link href={`/post/delete?id=${params.id}`}>
+                    <MdOutlineDeleteOutline></MdOutlineDeleteOutline>
+                  </Link>
                 </Button>
               </div>
             )}

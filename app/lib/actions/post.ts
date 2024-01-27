@@ -1,4 +1,5 @@
 "use server";
+import { getUserIdFromCurrentSession } from "../auth/page";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";
@@ -81,12 +82,6 @@ export async function getPost({ postId }: { postId: string }) {
     console.error("No data found for postId:", postId);
     throw new Error("No data found");
   }
-}
-
-export async function deletePost({ postId }: { postId: string }) {
-  const supabase = await createSupabaseClient();
-  const result = supabase.from("post").delete().eq("id", postId);
-  return result;
 }
 
 export async function getImageLinkforProfile({
@@ -181,4 +176,71 @@ export async function getImageLink({ formData }: { formData: FormData }) {
       url: "",
     };
   }
+}
+
+//delete post
+export async function deletePost({ postId }: { postId: string }) {
+  // check if the post belongs to currenct user
+  const supabase = await createSupabaseClient();
+  const { data, error } = await supabase
+    .from("post")
+    .select("user_id")
+    .eq("post_id", postId);
+  if (error) {
+    return {
+      error: "No post found",
+    };
+  }
+  const user = await getUserIdFromCurrentSession();
+  if (data[0].user_id !== user) {
+    return {
+      error: "You are not authorized to delete this post",
+    };
+  }
+
+  const result = supabase.from("post").delete().eq("post_id", postId);
+  return {
+    succes: true,
+  };
+}
+
+export async function changePostVisibility({
+  postId,
+  visibility,
+}: {
+  postId: string;
+  visibility: boolean;
+}) {
+  const supabase = await createSupabaseClient();
+  //check if the post belongs to current user
+  const { data, error } = await supabase
+    .from("post")
+    .select("user_id")
+    .eq("post_id", postId);
+  if (error) {
+    return {
+      error: "No post found",
+    };
+  }
+  const user = await getUserIdFromCurrentSession();
+  if (data[0].user_id !== user) {
+    return {
+      error: "You are not authorized to change visibility of this post",
+    };
+  }
+
+  const { data: updateData, error: updateError } = await supabase
+    .from("post")
+    .update({ public: visibility })
+    .eq("post_id", postId);
+
+  if (updateError) {
+    return {
+      error: "Error updating post visibility",
+    };
+  }
+
+  return {
+    success: true,
+  };
 }
