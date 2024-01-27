@@ -26,7 +26,7 @@ export default function PostCard({
       }}
       content={content}
     >
-      <div className="p-2  sm:flex-row flex flex-col gap-10 border-2 rounded-md border-solid light:border-gray-400 dark:border-white">
+      <div className="p-2  sm:flex-row flex flex-col gap-10 border-2 rounded-md border-solid light:border-gray-400 dark:border-gray-600">
         <div className="">
           <Image src={imageUrl} width={400}></Image>
         </div>

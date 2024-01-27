@@ -41,14 +41,19 @@ export default async function Profile() {
     <section className="flex flex-col">
       <CustomNav></CustomNav>
       <div
-        className={`flex flex-col md:flex-row h-auto   justify-center items-center min-w-screen max-w-5xl  px-4 gap-8 `}
+        className={`flex flex-col md:flex-row h-auto   justify-center  min-w-screen max-w-5xl  px-4 gap-8 `}
       >
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-center flex-col gap-2  p-2">
+        <div className="flex flex-col gap-2 ">
+          {/* <div className="flex justify-center flex-col gap-2  p-2">
             <h1 className="text-3xl font-bold">PROFILE</h1>
             <Link href="/profile/edit">Edit profile</Link>
-          </div>
-          <Image src={userData.profile_pic} width={300} height={300}></Image>
+          </div> */}
+          <Image
+            src={userData.profile_pic}
+            className="self-center"
+            width={300}
+            height={300}
+          ></Image>
           <h1 className="text-2xl font-bold">{userData.fullName}</h1>
           <p>{userData.bio}</p>
         </div>
@@ -56,7 +61,7 @@ export default async function Profile() {
           <Divider orientation="verti" className="mx-2 " />
         </div> */}
 
-        <div className="flex flex-col gap-2 ">
+        <div className="flex flex-col gap-2  ">
           {posts.map((post) => (
             <PostCard
               content={post}

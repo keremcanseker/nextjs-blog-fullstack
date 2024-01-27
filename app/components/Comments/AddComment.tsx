@@ -33,6 +33,7 @@ export default function AddComment({ id }: { id: string }) {
               size="sm"
               variant="solid"
               color="primary"
+              isIconOnly
               onClick={handleSubmit}
             >
               <IoSend></IoSend>
