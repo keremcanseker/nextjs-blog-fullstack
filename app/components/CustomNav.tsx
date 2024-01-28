@@ -89,7 +89,13 @@ export default function CustomNav({ className }: { className?: string }) {
             </DropdownItem>
             <DropdownItem
               className="flex flex-row justify-between items-center  "
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => {
+                setTheme(theme === "dark" ? "light" : "dark");
+                localStorage.setItem(
+                  "theme",
+                  theme === "dark" ? "light" : "dark"
+                );
+              }}
               endContent={
                 theme === "dark" ? (
                   <LuMoon className="text-2xl"></LuMoon>
