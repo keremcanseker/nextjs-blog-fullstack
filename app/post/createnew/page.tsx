@@ -142,16 +142,15 @@ const CreateNewPostPage: React.FC = () => {
             }`}
           >
             <input {...getInputProps()} />
-            <p className="text-lg">
-              {imageLoading ? (
-                <CircularProgress size="sm" color="primary" />
-              ) : (
-                <p className="text-lg">
-                  Drop or click to upload an image
-                  <BsUpload size="1.5rem" className="inline-block ml-2" />
-                </p>
-              )}
-            </p>
+
+            {imageLoading ? (
+              <CircularProgress size="sm" color="primary" />
+            ) : (
+              <p className="text-lg">
+                Drop or click to upload an image
+                <BsUpload size="1.5rem" className="inline-block ml-2" />
+              </p>
+            )}
           </div>
           {errors.image?.message && (
             <p className="text-red-500">{errors.image?.message}</p>
@@ -199,8 +198,8 @@ const CreateNewPostPage: React.FC = () => {
             placeholderText: "Edit Your Content Here!",
             imageUpload: false,
           }}
-          // {...register("content", { required: true })}
         ></FroalaEditor>
+
         {errors.content?.message && (
           <p className="text-red-500">{errors.content?.message}</p>
         )}
