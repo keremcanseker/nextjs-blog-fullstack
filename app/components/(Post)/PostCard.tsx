@@ -27,11 +27,8 @@ export default function PostCard({
   createdAt,
   keywords,
 }: PostCardProps) {
-  console.log("fix date");
-  console.log(keywords);
   // const imageUrl = image.toLowerCase();
-  ("testing image url");
-  console.log(image);
+
   const date = new Date(createdAt);
   const formattedDate = date.toLocaleDateString("en-US", dateOptions);
   return (

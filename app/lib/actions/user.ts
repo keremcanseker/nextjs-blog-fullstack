@@ -38,7 +38,6 @@ export async function updateUser(data: UserFormData) {
     console.log(error.message);
     return JSON.stringify(error);
   }
-  console.log(user);
 
   const result = supabase
     .from("user")
@@ -52,7 +51,6 @@ export async function updateUser(data: UserFormData) {
     .eq("user_id", userId)
     .single();
 
-  console.log(result);
   return result;
 }
 

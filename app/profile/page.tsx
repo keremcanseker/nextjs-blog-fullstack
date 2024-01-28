@@ -24,9 +24,6 @@ export default async function Profile() {
   const data = await getUserProfile();
   const userData = UserData.parse(data);
   const data2 = await getUserPosts();
-  console.log("BURADAASDASDS");
-  console.log(data2);
-  // const postData = PostDataSchema.parse(data2);
 
   const posts = data2.map((post) => ({
     title: post.title,

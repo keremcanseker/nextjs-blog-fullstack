@@ -134,7 +134,7 @@ const EditPostPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const postData = await getPost({ postId: postId || "" });
-        console.log("Post Data:", postData);
+
         // Preload the form with the fetched data
         setAuthorname(postData.author);
         setValue("title", postData.title);

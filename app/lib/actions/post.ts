@@ -72,6 +72,7 @@ export async function getPosts(): Promise<Post[] | { error: string }> {
 
       newData.author = userData[0].fullName;
       newData.keywords = keywordsArray;
+      newData.post_id = post.post_id;
 
       return newData as Post; // Ensure the type is explicitly casted to Post
     })

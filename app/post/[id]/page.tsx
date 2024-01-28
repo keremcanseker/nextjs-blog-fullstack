@@ -21,8 +21,6 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   const formattedDate = date.toLocaleDateString("en-US", dateOptions);
   const currentUser = await checkIfPostBelongsToCurrentUser(params.id);
 
-  console.log(post);
-
   return (
     <div className="flex flex-col">
       <CustomNav />

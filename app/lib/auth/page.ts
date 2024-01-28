@@ -43,7 +43,7 @@ export async function getUserSession() {
 // LOGOUT
 export async function logOut() {
   const supabase = await createSupabaseClient();
-  console.log("test");
+
   return await supabase.auth.signOut();
 }
 
