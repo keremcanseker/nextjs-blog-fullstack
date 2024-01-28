@@ -43,8 +43,9 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                   className="text-xl"
                   variant="faded"
                 >
-                  <Link href={`/post/edit?id=${params.id}`}></Link>
-                  <FiEdit></FiEdit>
+                  <Link href={`/post/edit?id=${params.id}`}>
+                    <FiEdit></FiEdit>
+                  </Link>
                 </Button>
                 <Button
                   isIconOnly

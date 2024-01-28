@@ -244,3 +244,50 @@ export async function changePostVisibility({
     success: true,
   };
 }
+
+export async function updatePost({
+  data,
+  postId,
+}: {
+  data: FormData;
+  postId: string;
+}) {
+  const supabase = await createSupabaseClient();
+  const user = await getUserIdFromCurrentSession();
+  if (!user) {
+    return {
+      error: "You are not authorized to update this post",
+    };
+  }
+  // check if post belongs the user
+  const { data: postData, error: postError } = await supabase
+    .from("post")
+    .select("user_id")
+    .eq("post_id", postId);
+  if (postError) {
+    return {
+      error: "No post found",
+    };
+  }
+  if (postData[0].user_id !== user) {
+    return {
+      error: "You are not authorized to update this post",
+    };
+  }
+
+  const { data: result, error: resultError } = await supabase
+    .from("post")
+    .update({
+      content: JSON.stringify(Object.fromEntries(data)),
+    })
+    .eq("post_id", postId)
+    .single();
+  if (resultError) {
+    return {
+      error: "Error updating post",
+    };
+  }
+  return {
+    success: true,
+  };
+}
