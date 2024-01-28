@@ -228,7 +228,7 @@ const EditPostPage: React.FC = () => {
 
         <FroalaEditor
           tag="textarea"
-          model={watchedFields.content}
+          model={watchedFields.content || null}
           onModelChange={(value: any) => {
             console.log("FroalaEditor Value:", value);
             setValue("content", value);
@@ -287,7 +287,7 @@ const EditPostPage: React.FC = () => {
         </div>
         <p> {watchedFields.summary}</p>
         <FroalaEditorView
-          model={watchedFields.content}
+          model={watchedFields.content || null}
           config={{
             placeholderText: "Edit Your Content Here!",
             // backgroundColor: "#000",
