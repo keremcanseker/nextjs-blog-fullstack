@@ -50,6 +50,7 @@ export default async function Profile() {
             src={userData.profile_pic}
             className="self-center"
             width={300}
+            alt="hello"
             height={300}
           ></Image>
           <h1 className="text-2xl font-bold">{userData.fullName}</h1>

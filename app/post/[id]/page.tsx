@@ -75,7 +75,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
           </p>
           <Divider orientation="horizontal"></Divider>
 
-          <Image src={post.image} className="w-full"></Image>
+          <Image src={post.image} className="w-full" alt="hello"></Image>
           <div className="flex flex-wrap gap-2">
             <p className="text-left text-lg">Keywords:</p>
             {post.keywords &&

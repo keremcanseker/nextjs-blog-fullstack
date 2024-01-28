@@ -54,7 +54,13 @@ export default function EditProfile() {
   return (
     <div className="flex flex-col h-screen  justify-center items-center min-w-screen max-w-[54rem] gap-8">
       {uploadedImage && (
-        <Image src={uploadedImage} width={200} height={200} radius="sm" />
+        <Image
+          src={uploadedImage}
+          width={200}
+          height={200}
+          radius="sm"
+          alt="hello"
+        />
       )}
       <label htmlFor="image" className="hover:cursor-pointer">
         Upload Image
