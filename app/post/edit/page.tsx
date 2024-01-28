@@ -56,7 +56,7 @@ type EditPostData = {
   content: string;
 };
 
-const EditPostPage: React.FC = () => {
+export default function Page() {
   const {
     register,
     handleSubmit,
@@ -160,11 +160,11 @@ const EditPostPage: React.FC = () => {
 
   return (
     <section
-      className={`flex justify-between min-w-screen p-[3rem] gap-[120px]`}
+      className={`flex flex-col xl:flex-row lg:justify-between max-w-screen  w-auto  p-[3rem] gap-[120px]`}
     >
       <form
         onSubmit={handleSubmit(handlePostSubmit)}
-        className={`flex flex-col gap-5 w-[35rem]`}
+        className={`flex flex-col gap-5 lg:w-[32rem]`}
       >
         <h1 className="font-bold text-2xl">Fill your post</h1>
 
@@ -256,7 +256,7 @@ const EditPostPage: React.FC = () => {
       </form>
       {/* preview of the live data */}
 
-      <div className="flex flex-col gap-3 w-[40rem]">
+      <div className="flex flex-col gap-3 lg:w-[32rem]">
         <h1 className="font-bold text-2xl text-left">Preview</h1>
 
         <h1 className="font-semibold text-2xl ">{watchedFields.title}</h1>
@@ -295,6 +295,4 @@ const EditPostPage: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default EditPostPage;
+}

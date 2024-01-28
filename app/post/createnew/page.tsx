@@ -39,7 +39,7 @@ import { postPost } from "@/app/lib/actions/post";
 import { showToastError, showToastSuccess } from "@/app/components/Toaster";
 import { useThemeStore } from "@/app/utils/ThemeStore";
 
-const CreateNewPostPage: React.FC = () => {
+export default function Page() {
   const {
     register,
     handleSubmit,
@@ -256,5 +256,4 @@ const CreateNewPostPage: React.FC = () => {
       </div>
     </section>
   );
-};
-export default CreateNewPostPage;
+}
