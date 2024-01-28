@@ -5,7 +5,7 @@ import createSupabaseClient, {
 } from "../supabase/client";
 
 // SIGNUP WITH EMAIL
-export default async function signUpWithEmail({
+export async function signUpWithEmail({
   email,
   password,
   username,
