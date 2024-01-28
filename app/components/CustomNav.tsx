@@ -1,6 +1,7 @@
 "use client";
-//dropdown menu
+
 import {
+  Navbar,
   Button,
   Switch,
   Avatar,
@@ -8,8 +9,9 @@ import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
   DropdownItem,
+  NavbarBrand,
+  NavbarContent,
 } from "@nextui-org/react";
 //icons
 import Link from "next/link";
@@ -23,13 +25,9 @@ import { useThemeStore } from "../utils/ThemeStore";
 import { logOut } from "../lib/auth/page";
 import { useRouter } from "next/navigation";
 import { getUserProfileImage } from "../lib/actions/user";
+import { LuMoon, LuSun } from "react-icons/lu";
 
-// import lottie animations
-// import { useRef, useEffect } from "react";
-// import { LottieRefCurrentProps } from "lottie-react";
-// import Lottie from "lottie-react";
-// import dark from "../assets/dark.json";
-export default function Navbar() {
+export default function CustomNav({ className }: { className?: string }) {
   const [profileImage, setProfileImage] = useState(null);
   const { theme, setTheme } = useThemeStore();
   const router = useRouter();
@@ -47,11 +45,14 @@ export default function Navbar() {
   }, []);
 
   return (
-    <section className="mx-auto flex w-full justify-center ">
-      <div className="p-6 max-w-[650px] w-full flex justify-between lg:flex-row lg:justify-between gap-4">
-        <Link href="/" className="text-3xl">
-          <AiFillHome className="inline-block mr-2" /> Welcome
+    <Navbar shouldHideOnScroll className={`pt-4 ${className}`}>
+      <NavbarBrand>
+        {/* <AcmeLogo /> */}
+        <Link href="/" className="flex text-3xl justify-center items-center">
+          <AiFillHome className="inline-block mr-2" /> Home
         </Link>
+      </NavbarBrand>
+      <NavbarContent justify="end">
         <Dropdown className=" " closeOnSelect>
           <DropdownTrigger>
             <Avatar
@@ -77,7 +78,8 @@ export default function Navbar() {
               Profile
             </DropdownItem>
             <DropdownItem
-              href="/post/create"
+              href="/post/createnew
+              "
               endContent={
                 <IoCreateOutline className="text-2xl"></IoCreateOutline>
               }
@@ -89,20 +91,11 @@ export default function Navbar() {
               className="flex flex-row justify-between items-center  "
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               endContent={
-                // <Lottie
-                //   animationData={dark}
-                //   loop={false}
-                //   autoplay={false}
-                //   className="w-[100px] p-0 -mr-2"
-                //   style={{ cursor: "pointer" }}
-                //   lottieRef={lottieRef}
-                // ></Lottie>
-                <Switch
-                  size="sm"
-                  className="w-10"
-                  color="secondary"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                ></Switch>
+                theme === "dark" ? (
+                  <LuMoon className="text-2xl"></LuMoon>
+                ) : (
+                  <LuSun className="text-2xl"></LuSun>
+                )
               }
               key="save"
             >
@@ -119,7 +112,7 @@ export default function Navbar() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </div>
-    </section>
+      </NavbarContent>
+    </Navbar>
   );
 }

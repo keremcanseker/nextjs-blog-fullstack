@@ -5,20 +5,23 @@ import { randomBytes } from "crypto";
 import { Divider } from "@nextui-org/react";
 
 export default async function Posts() {
-  const { data: posts } = await getPosts();
+  const posts = (await getPosts()) as any[];
 
   return (
-    <div className="flex-col w-full  max-w-[52rem] flex gap-6">
-      {posts?.map((post, index) => {
-        const content = JSON.parse(post.content);
+    <div className="flex-col w-full  max-w-5xl flex gap-6">
+      {posts?.map((post: any, index) => {
         return (
           <div key={index}>
             <PostCard
               key={randomBytes(10).toString("hex")}
-              content={content}
+              content={post.content}
+              createdAt={post.created_at}
+              image={post.image}
+              keywords={post.keywords}
+              summary={post.summary}
+              title={post.title}
               id={post.post_id}
             ></PostCard>
-            <Divider orientation="horizontal" />
           </div>
         );
       })}

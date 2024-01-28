@@ -2,11 +2,8 @@
 import { Image, Button, Link } from "@nextui-org/react";
 import { useLogInStore } from "@/app/utils/LogInStore";
 import { useRouter } from "next/navigation";
-import clsx from "clsx";
-import { useThemeStore } from "@/app/utils/ThemeStore";
 
 const Welcome: React.FC = () => {
-  const { theme } = useThemeStore();
   const { register, setRegister } = useLogInStore();
 
   const router = useRouter();

@@ -47,6 +47,7 @@ export default function Comments({ id }: { id: string }) {
       <AddComment id={id}></AddComment>
       {comments.map((comment, index) => (
         <CardComment
+          key={index}
           commentId={comment.comment_id}
           userId={comment.user_id}
           content={comment.content}

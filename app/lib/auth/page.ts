@@ -43,7 +43,7 @@ export async function getUserSession() {
 // LOGOUT
 export async function logOut() {
   const supabase = await createSupabaseClient();
-  console.log("test");
+
   return await supabase.auth.signOut();
 }
 
@@ -83,4 +83,24 @@ export async function getUserIdFromCurrentSession() {
   const supabase = await createSupabaseClientForStart();
   const { data } = await supabase.auth.getSession();
   return data.session?.user.id;
+}
+
+export async function checkIfPostBelongsToCurrentUser(post_id: string) {
+  console.log("check if post belongs to current user");
+  const supabase = await createSupabaseClientForStart();
+  const user_id = await getUserIdFromCurrentSession();
+  // check if post belongs to current user
+  const { data, error } = await supabase
+    .from("post")
+    .select("*")
+    .eq("post_id", post_id);
+  // console.log(data);
+  if (error) {
+    console.log(error.message);
+    return false;
+  }
+  if (data[0].user_id === user_id) {
+    return true;
+  }
+  return false;
 }

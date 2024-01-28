@@ -4,7 +4,7 @@ import { getUserIdFromCurrentSession } from "../auth/page";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";
-import { PostData, PostDataSchema } from "@/app/types/page";
+import { PostData, PostDataSchema } from "@/app/types/post";
 
 //unused
 export async function createUser({ data }: { data: any }) {
@@ -38,7 +38,6 @@ export async function updateUser(data: UserFormData) {
     console.log(error.message);
     return JSON.stringify(error);
   }
-  console.log(user);
 
   const result = supabase
     .from("user")
@@ -52,7 +51,6 @@ export async function updateUser(data: UserFormData) {
     .eq("user_id", userId)
     .single();
 
-  console.log(result);
   return result;
 }
 
@@ -72,17 +70,28 @@ export async function getUserProfile() {
   return data;
 }
 //: Promise<PostData[]>
-export async function getUserPosts(): Promise<PostData[]> {
+export async function getUserPosts() {
   const userId = await getUserIdFromCurrentSession();
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
     .from("post")
-    .select("content, post_id")
+    .select("content, post_id, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
+
   const result = data?.map((post) => {
     const newData = JSON.parse(post.content);
-    return { post_id: post.post_id, ...newData };
+    const keywordsArray = [];
+    for (const key in newData) {
+      if (key.startsWith("keywords[") && typeof newData[key] === "string") {
+        const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
+        keywordsArray.push(cleanedKeyword);
+      }
+    }
+
+    newData.keywords = keywordsArray;
+
+    return { post_id: post.post_id, ...newData, created_at: post.created_at };
   });
   return result!;
   // return result;
@@ -98,4 +107,16 @@ export async function getUserProfileImage() {
     .single();
 
   return data;
+}
+
+export async function getUserProfileName() {
+  const userId = await getUserIdFromCurrentSession();
+  const supabase = await createSupabaseClientForStart();
+  const { data, error } = await supabase
+    .from("user")
+    .select("user_name")
+    .eq("user_id", userId)
+    .single();
+
+  return data?.user_name || "";
 }
