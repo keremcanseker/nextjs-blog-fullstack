@@ -46,16 +46,20 @@ export default async function Profile() {
             <h1 className="text-3xl font-bold">PROFILE</h1>
            
           </div> */}
-          <Image
-            src={userData.profile_pic}
-            className="self-center"
-            width={300}
-            alt="hello"
-            height={300}
-          ></Image>
-          <h1 className="text-2xl font-bold">{userData.fullName}</h1>
-          <Link href="/profile/edit">Edit profile</Link>
-          <p>{userData.bio}</p>
+          {userData && (
+            <>
+              <Image
+                src={userData.profile_pic}
+                className="self-center"
+                width={300}
+                alt="hello"
+                height={300}
+              ></Image>
+              <h1 className="text-2xl font-bold">{userData.fullName}</h1>
+              <Link href="/profile/edit">Edit profile</Link>
+              <p>{userData.bio}</p>
+            </>
+          )}
         </div>
         {/* <div>
           <Divider orientation="verti" className="mx-2 " />

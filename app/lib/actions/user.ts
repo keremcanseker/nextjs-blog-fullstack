@@ -28,30 +28,32 @@ export async function getUser({ userId }: { userId: string }) {
 export async function updateUser(data: UserFormData) {
   const userId = await getUserIdFromCurrentSession();
   const supabase = await createSupabaseClient();
-  // with id of user check if password is correct write the code down
-  const { data: user, error } = await supabase.auth.updateUser({
-    password: data.password,
-    email: data.email,
-  });
+  console.log("update request");
+  if (userId === null)
+    return {
+      error: "User not logged in",
+    };
 
-  if (error) {
-    console.log(error.message);
-    return JSON.stringify(error);
-  }
-
-  const result = supabase
+  const { data: result, error: resultError } = await supabase
     .from("user")
     .update({
       user_name: data.username,
       profile_pic: data.image,
       fullName: data.fullName,
       bio: data.bio,
-      email: data.email,
     })
     .eq("user_id", userId)
     .single();
 
-  return result;
+  if (resultError) {
+    console.log(resultError.message);
+    return {
+      error: resultError.message.toLowerCase(),
+    };
+  }
+  return {
+    success: true,
+  };
 }
 
 export async function getUserProfile() {

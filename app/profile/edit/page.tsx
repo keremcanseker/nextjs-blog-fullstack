@@ -9,6 +9,9 @@ import { UserFormData } from "./types";
 import { schema } from "./types";
 
 import { getImageLinkforProfile } from "@/app/lib/actions/post";
+import { showToastError, showToastSuccess } from "@/app/components/Toaster";
+import { useThemeStore } from "@/app/utils/ThemeStore";
+import { error } from "console";
 
 export default function EditProfile() {
   const {
@@ -21,6 +24,7 @@ export default function EditProfile() {
     resolver: zodResolver(schema),
   }); //burdaki handle submit sunu yapiyor once validatini yapiyor sonra submiti yapiyor gecmesse submiti yapmiyor
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const { theme } = useThemeStore();
   const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -48,7 +52,14 @@ export default function EditProfile() {
 
     // Now, you can directly pass the data object to updateUser
     const result = await updateUser(data);
-    console.log(result);
+    if (result.error) {
+      showToastError({ message: result.error, theme: theme });
+    } else {
+      showToastSuccess({
+        message: "Successfully updated profile",
+        theme: theme,
+      });
+    }
   };
 
   return (
@@ -65,6 +76,7 @@ export default function EditProfile() {
       <label htmlFor="image" className="hover:cursor-pointer">
         Upload Image
       </label>
+      {errors.image?.message}
       <input id="image" type="file" className="hidden" onChange={handleImage} />
       <form
         className="flex flex-col w-[300px] gap-1"
@@ -89,15 +101,7 @@ export default function EditProfile() {
           labelPlacement="outside"
           errorMessage={errors.bio?.message}
         ></Input>
-        <Input
-          {...register("email")}
-          size="md"
-          radius="sm"
-          type="email"
-          label="Email"
-          labelPlacement="outside"
-          errorMessage={errors.email?.message}
-        ></Input>
+
         <Input
           {...register("username")}
           size="md"
@@ -106,15 +110,6 @@ export default function EditProfile() {
           label="Username"
           labelPlacement="outside"
           errorMessage={errors.username?.message}
-        ></Input>
-        <Input
-          {...register("password")}
-          size="md"
-          radius="sm"
-          type="password"
-          label="Password"
-          labelPlacement="outside"
-          errorMessage={errors.password?.message}
         ></Input>
 
         <Button
