@@ -261,7 +261,7 @@ const EditPostPage: React.FC = () => {
           </p>
         )}
         {watchedFields.image && (
-          <Image src={watchedFields.image} className="max-h-sm" />
+          <Image src={watchedFields.image} className="max-h-sm" alt="hello" />
         )}
         {/* map through key words */}
         <div className="flex flex-wrap gap-2">

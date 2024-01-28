@@ -40,7 +40,7 @@ export default function PostCard({
     >
       <div className="p-2  sm:flex-row flex flex-col gap-10 border-2 rounded-md border-solid light:border-gray-400 dark:border-gray-600">
         <div className="">
-          <Image src={image} width={400}></Image>
+          <Image src={image} width={400} alt="hello"></Image>
         </div>
 
         <div className="flex flex-col w-full gap-1">

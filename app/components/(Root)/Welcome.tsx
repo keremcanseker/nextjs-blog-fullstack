@@ -15,7 +15,11 @@ const Welcome: React.FC = () => {
     <section>
       <section className="page_wrapper sm:flex-row flex-col items-center gap-10">
         <div className="max-w-[300px]">
-          <Image src="/image.png" className="w-full shadow-2xl"></Image>
+          <Image
+            src="/image.png"
+            className="w-full shadow-2xl"
+            alt="hello"
+          ></Image>
         </div>
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-4xl  text-center">Welcome to the G Blog</h1>

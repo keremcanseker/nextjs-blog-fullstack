@@ -212,7 +212,9 @@ const CreateNewPostPage: React.FC = () => {
 
       <div className="flex flex-col gap-3 w-[40rem]">
         <h1 className="font-bold text-2xl text-left">Preview</h1>
-        {imageUrl.length > 0 && <Image src={imageUrl} className="max-h-sm" />}
+        {imageUrl.length > 0 && (
+          <Image src={imageUrl} className="max-h-sm" alt="hello" />
+        )}
         <h1 className="font-semibold text-2xl ">{watchedFields.title}</h1>
         {watchedFields.title?.length > 0 && (
           <p className="text-left text-lg">
