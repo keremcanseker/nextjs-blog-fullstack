@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, Button, Input } from "@nextui-org/react";
 import { IoArrowBack } from "react-icons/io5";
 import { useLogInStore } from "@/app/utils/LogInStore";
-import { signInWithEmail } from "@/app/lib/auth/page";
+import { signInWithEmail } from "@/app/lib/auth/auth";
 import {
   ToastContainerComponent,
   showToastSuccess,

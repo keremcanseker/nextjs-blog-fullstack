@@ -5,7 +5,7 @@ import Navbar from "@/app/components/Navbar";
 import CustomNav from "@/app/components/CustomNav";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import { checkIfPostBelongsToCurrentUser } from "@/app/lib/auth/page";
+import { checkIfPostBelongsToCurrentUser } from "@/app/lib/auth/auth";
 import Link from "next/link";
 import { MdOutlineVisibility } from "react-icons/md";
 const dateOptions: Intl.DateTimeFormatOptions = {

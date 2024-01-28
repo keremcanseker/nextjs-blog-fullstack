@@ -1,6 +1,6 @@
 "use server";
 import { UserFormData } from "@/app/profile/edit/types";
-import { getUserIdFromCurrentSession } from "../auth/page";
+import { getUserIdFromCurrentSession } from "../auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";

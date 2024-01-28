@@ -4,7 +4,7 @@ import { useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useThemeStore } from "@/app/utils/ThemeStore";
 import { useLogInStore } from "@/app/utils/LogInStore";
-import { signUpWithEmail } from "@/app/lib/auth/page";
+import { signUpWithEmail } from "@/app/lib/auth/auth";
 import { useRouter } from "next/navigation";
 
 import {

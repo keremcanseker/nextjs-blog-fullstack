@@ -1,5 +1,5 @@
 "use server";
-import { getUserIdFromCurrentSession } from "../auth/page";
+import { getUserIdFromCurrentSession } from "../auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";

@@ -22,7 +22,7 @@ import { CiLogout } from "react-icons/ci";
 import { IoCreateOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { useThemeStore } from "../utils/ThemeStore";
-import { logOut } from "../lib/auth/page";
+import { logOut } from "../lib/auth/auth";
 import { useRouter } from "next/navigation";
 import { getUserProfileImage } from "../lib/actions/user";
 import { LuMoon, LuSun } from "react-icons/lu";

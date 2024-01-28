@@ -1,5 +1,5 @@
 "use server";
-import { getUserSession } from "./lib/auth/page";
+import { getUserSession } from "./lib/auth/auth";
 import Home from "./components/(Root)/Home";
 import Welcome from "./components/(Root)/Welcome";
 

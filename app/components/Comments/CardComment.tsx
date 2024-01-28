@@ -1,5 +1,5 @@
 "use client";
-import { getUserWithId } from "@/app/lib/auth/page";
+import { getUserWithId } from "@/app/lib/auth/auth";
 import { increaseLike, decreaseLike } from "@/app/lib/actions/comment";
 import { Avatar, Badge, Button, Link } from "@nextui-org/react";
 import { useState, useEffect, useRef } from "react";
