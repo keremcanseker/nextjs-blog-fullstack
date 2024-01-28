@@ -69,7 +69,7 @@ const Login: React.FC = () => {
               Register
             </Link>
             <Link
-              href="/forgot-password"
+              href="/signin"
               className="text-right mb-1 mt-1"
               color="foreground"
             >

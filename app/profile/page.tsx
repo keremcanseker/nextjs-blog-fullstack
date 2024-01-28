@@ -44,7 +44,7 @@ export default async function Profile() {
         <div className="flex flex-col gap-2 ">
           {/* <div className="flex justify-center flex-col gap-2  p-2">
             <h1 className="text-3xl font-bold">PROFILE</h1>
-            <Link href="/profile/edit">Edit profile</Link>
+           
           </div> */}
           <Image
             src={userData.profile_pic}
@@ -53,6 +53,7 @@ export default async function Profile() {
             height={300}
           ></Image>
           <h1 className="text-2xl font-bold">{userData.fullName}</h1>
+          <Link href="/profile/edit">Edit profile</Link>
           <p>{userData.bio}</p>
         </div>
         {/* <div>

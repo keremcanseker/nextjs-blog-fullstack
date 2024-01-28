@@ -25,6 +25,7 @@ import { useThemeStore } from "../utils/ThemeStore";
 import { logOut } from "../lib/auth/page";
 import { useRouter } from "next/navigation";
 import { getUserProfileImage } from "../lib/actions/user";
+import { LuMoon, LuSun } from "react-icons/lu";
 
 export default function CustomNav({ className }: { className?: string }) {
   const [profileImage, setProfileImage] = useState(null);
@@ -90,20 +91,11 @@ export default function CustomNav({ className }: { className?: string }) {
               className="flex flex-row justify-between items-center  "
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               endContent={
-                // <Lottie
-                //   animationData={dark}
-                //   loop={false}
-                //   autoplay={false}
-                //   className="w-[100px] p-0 -mr-2"
-                //   style={{ cursor: "pointer" }}
-                //   lottieRef={lottieRef}
-                // ></Lottie>
-                <Switch
-                  size="sm"
-                  className="w-10"
-                  color="secondary"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                ></Switch>
+                theme === "dark" ? (
+                  <LuMoon className="text-2xl"></LuMoon>
+                ) : (
+                  <LuSun className="text-2xl"></LuSun>
+                )
               }
               key="save"
             >
