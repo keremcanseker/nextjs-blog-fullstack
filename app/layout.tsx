@@ -6,6 +6,7 @@ import "./styles/globals.css";
 import { useThemeStore } from "./utils/ThemeStore";
 import { ToastContainerComponent } from "./components/Toaster";
 import { useEffect } from "react";
+import Script from "next/script";
 
 const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { theme, setTheme } = useThemeStore();
@@ -44,6 +45,10 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <ToastContainerComponent />
           {children}
         </NextuiProvider>
+        <Script
+          src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"
+          type="text/javascript"
+        />
       </body>
     </html>
   );

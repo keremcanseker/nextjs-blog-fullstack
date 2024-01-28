@@ -15,25 +15,48 @@ import { BsUpload } from "react-icons/bs";
 import { useRef, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import dynamic from "next/dynamic";
-const FroalaEditor = dynamic(() => import("react-froala-wysiwyg"), {
-  ssr: false,
-});
+const FroalaEditor = dynamic(
+  async () => {
+    const values = await Promise.all([
+      import("react-froala-wysiwyg"), // must be first import since we are doing values[0] in return
+      // import("froala-editor/js/plugins.pkgd.min.js"),
+    ]);
+    return values[0];
+  },
+  {
+    loading: () => <p>LOADING!!!</p>,
+    ssr: false,
+  }
+);
 const FroalaEditorView = dynamic(
   () => import("react-froala-wysiwyg/FroalaEditorView"),
   { ssr: false }
 );
+//@ts-ignore
 
-import "froala-editor/css/froala_style.min.css";
+// const Plugins = dynamic(
+//   async () => {
+//     const values = await Promise.all([
+//       import("froala-editor/js/plugins.pkgd.min.js"),
+//     ]);
+//     return values[0];
+//   },
+//   {
+//     loading: () => <p>LOADING!!!</p>,
+//     ssr: false,
+//   }
+// );
 import "froala-editor/css/froala_editor.pkgd.min.css";
-import "froala-editor/css/plugins/code_view.min.css";
-import "froala-editor/js/plugins/image.min.js";
-import "froala-editor/js/plugins/char_counter.min.js";
-import "froala-editor/js/plugins/markdown.min.js";
-import "froala-editor/js/plugins/code_view.min.js";
-import "froala-editor/js/plugins/link.min.js";
-import { formatDate } from "@/app/lib/actions/helpers";
+import "froala-editor/css/froala_style.min.css";
+// import "froala-editor/css/plugins/code_view.min.css";
+// import "froala-editor/js/plugins/image.min.js";
+// import "froala-editor/js/plugins/char_counter.min.js";
+// import "froala-editor/js/plugins/markdown.min.js";
+// import "froala-editor/js/plugins/code_view.min.js";
+// import "froala-editor/js/plugins/link.min.js";
 // import FroalaEditor from "react-froala-wysiwyg";
-// import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
+// import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";;
+import { formatDate } from "@/app/lib/actions/helpers";
 import { getUserProfileName } from "@/app/lib/actions/user";
 import { postPost } from "@/app/lib/actions/post";
 import { showToastError, showToastSuccess } from "@/app/components/Toaster";
