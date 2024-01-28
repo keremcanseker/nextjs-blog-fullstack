@@ -35,6 +35,7 @@ export default async function Profile() {
     keywords: post.keywords,
     image: post.image,
     post_id: post.post_id,
+    created_at: post.created_at,
   }));
 
   return (
@@ -64,9 +65,14 @@ export default async function Profile() {
         <div className="flex flex-col gap-2  ">
           {posts.map((post) => (
             <PostCard
-              content={post}
+              title={post.title}
+              summary={post.summary}
+              content={post.content}
+              keywords={post.keywords}
+              image={post.image}
               id={post.post_id}
               key={post.post_id}
+              createdAt={post.created_at}
             ></PostCard>
           ))}
         </div>

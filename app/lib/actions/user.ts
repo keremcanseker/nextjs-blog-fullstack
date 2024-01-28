@@ -77,7 +77,7 @@ export async function getUserPosts() {
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
     .from("post")
-    .select("content, post_id")
+    .select("content, post_id, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
@@ -90,9 +90,10 @@ export async function getUserPosts() {
         keywordsArray.push(cleanedKeyword);
       }
     }
+
     newData.keywords = keywordsArray;
 
-    return { post_id: post.post_id, ...newData };
+    return { post_id: post.post_id, ...newData, created_at: post.created_at };
   });
   return result!;
   // return result;

@@ -23,12 +23,61 @@ export async function postPost({ data }: { data: FormData }) {
     .single();
   return result;
 }
-
-export async function getPosts() {
+export type Post = {
+  title: string;
+  content: string;
+  created_at: string;
+  image: string;
+  keywords: string[];
+  author: string;
+};
+export async function getPosts(): Promise<Post[] | { error: string }> {
   const supabase = await createSupabaseClientForStart();
-  const result = supabase.from("post").select("*");
+  const { data, error } = await supabase.from("post").select("*");
 
-  return result;
+  if (error) {
+    // Handle the error, for example, log it or throw an exception
+    return {
+      error: "Error fetching data",
+    };
+  }
+
+  const postsWithKeywords = await Promise.all(
+    data.map(async (post) => {
+      // parse the content to JSON
+      let newData = JSON.parse(post.content);
+
+      // Extract keywords from newData and add them to an array
+      const keywordsArray = [];
+      for (const key in newData) {
+        if (key.startsWith("keywords[") && typeof newData[key] === "string") {
+          const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
+          keywordsArray.push(cleanedKeyword);
+        }
+      }
+
+      // append the created_at property at the top level
+      newData.created_at = post.created_at;
+
+      // get the author's fullname using user_id
+      const { data: userData, error: userError } = await supabase
+        .from("user")
+        .select("fullName")
+        .eq("user_id", post.user_id);
+
+      if (userError) {
+        console.error("Error fetching user data:", userError);
+        throw new Error("Error fetching user data");
+      }
+
+      newData.author = userData[0].fullName;
+      newData.keywords = keywordsArray;
+
+      return newData as Post; // Ensure the type is explicitly casted to Post
+    })
+  );
+
+  return postsWithKeywords;
 }
 
 export async function getPost({ postId }: { postId: string }) {

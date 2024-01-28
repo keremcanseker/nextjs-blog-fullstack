@@ -1,24 +1,39 @@
-import { Image } from "@nextui-org/react";
+import { Image, Chip } from "@nextui-org/react";
 import Link from "next/link";
+import { format } from "date-fns";
 
 interface PostCardProps {
-  content: {
-    title: string;
-    summary: string;
-    content: string;
-    category?: string[] | string;
-    image: string;
-  };
-  id?: string;
+  content: string;
+  title: string;
+  summary: string;
+  image: string;
+  id: string;
+  createdAt: string;
+  keywords: string[];
 }
+const dateOptions: Intl.DateTimeFormatOptions = {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
 
 export default function PostCard({
-  content: { title, summary, content, category, image },
+  content,
+  title,
+  summary,
+  image,
   id,
+  createdAt,
+  keywords,
 }: PostCardProps) {
-  const imageUrl = image.toLowerCase();
-  //light:border-slate-950 dark:border-x-slate-50 rounded-lg border
-
+  console.log("fix date");
+  console.log(keywords);
+  // const imageUrl = image.toLowerCase();
+  ("testing image url");
+  console.log(image);
+  const date = new Date(createdAt);
+  const formattedDate = date.toLocaleDateString("en-US", dateOptions);
   return (
     <Link
       href={{
@@ -28,11 +43,21 @@ export default function PostCard({
     >
       <div className="p-2  sm:flex-row flex flex-col gap-10 border-2 rounded-md border-solid light:border-gray-400 dark:border-gray-600">
         <div className="">
-          <Image src={imageUrl} width={400}></Image>
+          <Image src={image} width={400}></Image>
         </div>
-        <div className="flex flex-col w-full">
+
+        <div className="flex flex-col w-full gap-1">
           <h1 className="text-2xl font-bold">{title}</h1>
-          <p className="font-semibold">{category}</p>
+          <p className="text-sm">{formattedDate}</p>
+          <div className="flex flex-wrap gap-1">
+            {keywords &&
+              keywords.map((keyword) => (
+                <Chip color="default" size="sm" key={keyword}>
+                  {keyword}
+                </Chip>
+              ))}
+          </div>
+
           <p>{summary}</p>
         </div>
       </div>
