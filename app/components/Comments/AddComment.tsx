@@ -3,18 +3,20 @@ import { postComment } from "@/app/lib/actions/comment";
 import { Avatar, Button, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
+import DOMPurify from "dompurify";
 
 export default function AddComment({ id }: { id: string }) {
   const [comment, setComment] = useState("");
   const handleSubmit = async () => {
+    "test comment";
     setComment("");
     // reload the page
     const reloadPage = () => {
       window.location.reload();
     };
     reloadPage();
-
-    postComment(comment, id);
+    const cleanComment = DOMPurify.sanitize(comment);
+    postComment(cleanComment, id);
     // after submitting re-render the comments
   };
 
