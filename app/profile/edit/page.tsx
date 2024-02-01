@@ -7,12 +7,10 @@ import { useState } from "react";
 import { updateUser } from "@/app/lib/actions/user";
 import { UserFormData } from "./types";
 import { schema } from "./types";
-
+import CustomNav from "@/app/components/CustomNav";
 import { getImageLinkforProfile } from "@/app/lib/actions/post";
 import { showToastError, showToastSuccess } from "@/app/components/Toaster";
 import { useThemeStore } from "@/app/utils/ThemeStore";
-import { error } from "console";
-
 export default function EditProfile() {
   const {
     register,
@@ -63,67 +61,75 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="flex flex-col h-screen  justify-center items-center min-w-screen max-w-[54rem] gap-8">
-      {uploadedImage && (
-        <Image
-          src={uploadedImage}
-          width={200}
-          height={200}
-          radius="sm"
-          alt="hello"
+    <section className="flex h-screen flex-col w-screen items-center ">
+      <CustomNav className="" />
+      <div className="flex flex-col items-center mt-20 min-w-screen max-w-5xl px-4 gap-8">
+        {uploadedImage && (
+          <Image
+            src={uploadedImage}
+            width={200}
+            height={200}
+            radius="sm"
+            alt="hello"
+          />
+        )}
+        <label htmlFor="image" className="hover:cursor-pointer">
+          Upload Image
+        </label>
+        {errors.image?.message}
+        <input
+          id="image"
+          type="file"
+          className="hidden"
+          onChange={handleImage}
         />
-      )}
-      <label htmlFor="image" className="hover:cursor-pointer">
-        Upload Image
-      </label>
-      {errors.image?.message}
-      <input id="image" type="file" className="hidden" onChange={handleImage} />
-      <form
-        className="flex flex-col w-[300px] gap-1"
-        onSubmit={handleSubmit(submitForm)}
-      >
-        <Input
-          {...register("fullName")}
-          size="md"
-          radius="sm"
-          type="text"
-          label="Name:"
-          labelPlacement="outside"
-          errorMessage={errors.fullName?.message}
-        ></Input>
-
-        <Input
-          {...register("bio")}
-          size="md"
-          radius="sm"
-          type="text"
-          label="Bio:"
-          labelPlacement="outside"
-          errorMessage={errors.bio?.message}
-        ></Input>
-
-        <Input
-          {...register("username")}
-          size="md"
-          radius="sm"
-          type="text"
-          label="Username"
-          labelPlacement="outside"
-          errorMessage={errors.username?.message}
-        ></Input>
-
-        <Button
-          type="submit"
-          radius="sm"
-          size="md"
-          color="primary"
-          className="mt-4"
-          spinner={<CircularProgress className="" />}
-          isLoading={isSubmitting}
+        <form
+          className="flex flex-col  max-w-[300px] gap-1"
+          onSubmit={handleSubmit(submitForm)}
         >
-          Submit
-        </Button>
-      </form>
-    </div>
+          <Input
+            {...(register("fullName"), { required: true })}
+            size="md"
+            radius="sm"
+            type="text"
+            label="Name:"
+            labelPlacement="outside"
+            errorMessage={errors.fullName?.message}
+          ></Input>
+
+          <Input
+            {...(register("bio"), { required: true })}
+            size="md"
+            radius="sm"
+            type="text"
+            label="Bio:"
+            labelPlacement="outside"
+            errorMessage={errors.bio?.message}
+          ></Input>
+
+          <Input
+            {...(register("username"), { required: true })}
+            size="md"
+            radius="sm"
+            type="text"
+            label="Username"
+            labelPlacement="outside"
+            errorMessage={errors.username?.message}
+          ></Input>
+
+          <Button
+            type="submit"
+            radius="sm"
+            size="md"
+            color="primary"
+            className="mt-4"
+            spinner={<CircularProgress className="" />}
+            isLoading={isSubmitting}
+          >
+            Submit
+          </Button>
+        </form>
+      </div>
+    </section>
   );
 }

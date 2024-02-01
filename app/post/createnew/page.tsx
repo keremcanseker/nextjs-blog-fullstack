@@ -14,54 +14,17 @@ import { getImageLink } from "@/app/lib/actions/post";
 import { BsUpload } from "react-icons/bs";
 import { useRef, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import dynamic from "next/dynamic";
-const FroalaEditor = dynamic(
-  async () => {
-    const values = await Promise.all([
-      import("react-froala-wysiwyg"), // must be first import since we are doing values[0] in return
-      // import("froala-editor/js/plugins.pkgd.min.js"),
-    ]);
-    return values[0];
-  },
-  {
-    loading: () => <p>LOADING!!!</p>,
-    ssr: false,
-  }
-);
-const FroalaEditorView = dynamic(
-  () => import("react-froala-wysiwyg/FroalaEditorView"),
-  { ssr: false }
-);
-//@ts-ignore
 
-// const Plugins = dynamic(
-//   async () => {
-//     const values = await Promise.all([
-//       import("froala-editor/js/plugins.pkgd.min.js"),
-//     ]);
-//     return values[0];
-//   },
-//   {
-//     loading: () => <p>LOADING!!!</p>,
-//     ssr: false,
-//   }
-// );
-import "froala-editor/css/froala_editor.pkgd.min.css";
-import "froala-editor/css/froala_style.min.css";
-// import "froala-editor/css/plugins/code_view.min.css";
-// import "froala-editor/js/plugins/image.min.js";
-// import "froala-editor/js/plugins/char_counter.min.js";
-// import "froala-editor/js/plugins/markdown.min.js";
-// import "froala-editor/js/plugins/code_view.min.js";
-// import "froala-editor/js/plugins/link.min.js";
-// import FroalaEditor from "react-froala-wysiwyg";
-// import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";;
 import { formatDate } from "@/app/lib/actions/helpers";
 import { getUserProfileName } from "@/app/lib/actions/user";
 import { postPost } from "@/app/lib/actions/post";
 import { showToastError, showToastSuccess } from "@/app/components/Toaster";
 import { useThemeStore } from "@/app/utils/ThemeStore";
-
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+// import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 export default function Page() {
   const {
     register,
@@ -111,6 +74,7 @@ export default function Page() {
       .split(" ")
       .filter((keyword) => keyword.trim() !== "");
 
+    const sanitizedContent = DOMPurify.sanitize(data.content || "");
     // Create a FormData instance
     const formData = new FormData();
 
@@ -118,7 +82,7 @@ export default function Page() {
     formData.append("title", data.title);
     formData.append("summary", data.summary);
     formData.append("image", data.image);
-    formData.append("content", data.content || ""); // Optional, depends on your API
+    formData.append("content", sanitizedContent); // Optional, depends on your API
 
     // Append each keyword individually
     keywordsArray.forEach((keyword, index) => {
@@ -131,6 +95,16 @@ export default function Page() {
     } catch (error) {
       showToastError({ message: "Error creating post", theme: theme });
     }
+  };
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"],
+      ["code-block"],
+    ],
   };
 
   useEffect(() => {
@@ -210,18 +184,14 @@ export default function Page() {
           errorMessage={errors.summary?.message}
         ></Textarea>
 
-        <FroalaEditor
-          tag="textarea"
-          model={watchedFields.content || null}
-          onModelChange={(value: any) => {
-            console.log("FroalaEditor Value:", value);
-            setValue("content", value);
-          }}
-          config={{
-            placeholderText: "Edit Your Content Here!",
-            imageUpload: false,
-          }}
-        ></FroalaEditor>
+        <ReactQuill
+          theme="snow"
+          value={watchedFields.content || ""}
+          onChange={(value) => setValue("content", value)}
+          className="h-[30rem] overflow-y-auto"
+          placeholder="Write your content here"
+          modules={modules}
+        ></ReactQuill>
 
         {errors.content?.message && (
           <p className="text-red-500">{errors.content?.message}</p>
@@ -243,9 +213,7 @@ export default function Page() {
 
       <div className="flex flex-col gap-3 w-[40rem]">
         <h1 className="font-bold text-2xl text-left">Preview</h1>
-        {imageUrl.length > 0 && (
-          <Image src={imageUrl} className="max-h-sm" alt="hello" />
-        )}
+
         <h1 className="font-semibold text-2xl ">{watchedFields.title}</h1>
         {watchedFields.title?.length > 0 && (
           <p className="text-left text-lg">
@@ -254,6 +222,9 @@ export default function Page() {
               {formatDate(new Date())}
             </span>
           </p>
+        )}
+        {imageUrl.length > 0 && (
+          <Image src={imageUrl} className="max-h-sm" alt="hello" />
         )}
         {/* map through key words */}
         <div className="flex flex-wrap gap-2">
@@ -269,13 +240,10 @@ export default function Page() {
             ))}
         </div>
         <p> {watchedFields.summary}</p>
-        <FroalaEditorView
-          model={watchedFields.content || null}
-          config={{
-            placeholderText: "Edit Your Content Here!",
-            // backgroundColor: "#000",
-          }}
-        ></FroalaEditorView>
+        <div
+          className="ql-editor"
+          dangerouslySetInnerHTML={{ __html: watchedFields.content || "" }}
+        ></div>
       </div>
     </section>
   );

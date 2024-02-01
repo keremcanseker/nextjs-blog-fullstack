@@ -33,7 +33,11 @@ export type Post = {
 };
 export async function getPosts(): Promise<Post[] | { error: string }> {
   const supabase = await createSupabaseClientForStart();
-  const { data, error } = await supabase.from("post").select("*");
+  const { data, error } = await supabase
+    .from("post")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .eq("public", true);
 
   if (error) {
     // Handle the error, for example, log it or throw an exception
@@ -231,6 +235,7 @@ export async function getImageLink({ formData }: { formData: FormData }) {
 //delete post
 export async function deletePost({ postId }: { postId: string }) {
   // check if the post belongs to currenct user
+
   const supabase = await createSupabaseClient();
   const { data, error } = await supabase
     .from("post")
@@ -248,7 +253,7 @@ export async function deletePost({ postId }: { postId: string }) {
     };
   }
 
-  const result = supabase.from("post").delete().eq("post_id", postId);
+  const result = await supabase.from("post").delete().eq("post_id", postId);
   return {
     succes: true,
   };

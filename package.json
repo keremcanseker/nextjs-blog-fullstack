@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "next start -p 4000",
+    "start": "next start -p 5000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.0",
     "date-fns": "^3.3.1",
+    "dompurify": "^3.0.8",
     "framer-motion": "^10.16.5",
     "froala-editor": "^4.1.4",
     "lottie-react": "^2.4.0",
@@ -37,6 +38,7 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
