@@ -122,13 +122,13 @@ export default function Page() {
 
   return (
     <section
-      className={`flex justify-between min-w-screen p-[3rem] gap-[120px]`}
+      className={`flex flex-col xl:flex-row justify-between min-w-screen p-4 md:p-[3rem] gap-[120px]`}
     >
       <form
         onSubmit={handleSubmit(handlePostSubmit)}
-        className={`flex flex-col gap-5 w-[35rem]`}
+        className={`flex flex-col gap-5 w-full md:w-[35rem]`}
       >
-        <h1 className="font-bold text-2xl">Fill your post</h1>
+        <h1 className="font-bold text-2xl">Create your post</h1>
 
         <p className="text-xl">Upload a cover image</p>
         <div className="flex w-full flex-col justify-start">
@@ -211,7 +211,7 @@ export default function Page() {
       </form>
       {/* preview of the live data */}
 
-      <div className="flex flex-col gap-3 w-[40rem]">
+      <div className="flex flex-col gap-3 w-full md:w-[40rem]">
         <h1 className="font-bold text-2xl text-left">Preview</h1>
 
         <h1 className="font-semibold text-2xl ">{watchedFields.title}</h1>

@@ -154,13 +154,13 @@ export default function Page() {
 
   return (
     <section
-      className={`flex flex-col xl:flex-row lg:justify-between max-w-screen  w-auto  p-[3rem] gap-[120px]`}
+      className={`flex flex-col xl:flex-row lg:justify-between max-w-screen  w-auto  p-4 md:p-[3rem] gap-[120px]`}
     >
       <form
         onSubmit={handleSubmit(handlePostSubmit)}
-        className={`flex flex-col gap-5 lg:w-[32rem]`}
+        className={`flex flex-col gap-5 w-full lg:w-[32rem]`}
       >
-        <h1 className="font-bold text-2xl">Fill your post</h1>
+        <h1 className="font-bold text-2xl">Edit your post</h1>
 
         <p className="text-xl">Upload a cover image</p>
         <div className="flex w-full flex-col justify-start">
