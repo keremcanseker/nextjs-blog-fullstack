@@ -5,6 +5,7 @@ import { z } from "zod";
 import PostCard from "../components/(Post)/PostCard";
 import { PostDataSchema, PostData } from "../types/post";
 import CustomNav from "../components/CustomNav";
+import { use, useEffect } from "react";
 
 type ProfileData = {
   profile_pic?: string;
@@ -23,6 +24,7 @@ const UserData: ZodType<ProfileData> = z.object({
 export default async function Profile() {
   const data = await getUserProfile();
   const userData = UserData.parse(data);
+
   const data2 = await getUserPosts();
 
   const posts = data2.map((post) => ({
@@ -46,15 +48,29 @@ export default async function Profile() {
             <h1 className="text-3xl font-bold">PROFILE</h1>
            
           </div> */}
-          {userData && (
+          {userData.fullName === "" &&
+          userData.bio === "" &&
+          userData.profile_pic === "" ? (
             <>
-              <Image
-                src={userData.profile_pic}
-                className="self-center"
-                width={300}
-                alt="hello"
-                height={300}
-              ></Image>
+              <p className="text-xl mt-2">
+                You have no profile data please add some information
+              </p>
+              <Link href="/profile/edit" color="warning">
+                Edit profile
+              </Link>
+            </>
+          ) : (
+            <>
+              {userData.profile_pic !== "" && (
+                <Image
+                  src={userData.profile_pic}
+                  className="self-center"
+                  width={300}
+                  alt="hello"
+                  height={300}
+                ></Image>
+              )}
+
               <h1 className="text-2xl font-bold">{userData.fullName}</h1>
               <Link href="/profile/edit">Edit profile</Link>
               <p>{userData.bio}</p>

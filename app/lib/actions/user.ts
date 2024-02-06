@@ -69,7 +69,16 @@ export async function getUserProfile() {
     console.log(error.message);
     return JSON.stringify(error);
   }
-  return data;
+  // If data is null, assign an empty object
+  const userData = data || {};
+
+  // If the properties are null, assign an empty string
+  userData.user_name = userData.user_name || "";
+  userData.profile_pic = userData.profile_pic || "";
+  userData.fullName = userData.fullName || "";
+  userData.bio = userData.bio || "";
+
+  return userData;
 }
 //: Promise<PostData[]>
 export async function getUserPosts() {
