@@ -3,10 +3,11 @@ import { postComment } from "@/app/lib/actions/comment";
 import { Avatar, Button, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 
 export default function AddComment({ id }: { id: string }) {
   const [comment, setComment] = useState("");
+  const [error, setError] = useState("");
   const handleSubmit = async () => {
     "test comment";
     setComment("");
@@ -14,9 +15,17 @@ export default function AddComment({ id }: { id: string }) {
     const reloadPage = () => {
       window.location.reload();
     };
-    reloadPage();
+
     const cleanComment = DOMPurify.sanitize(comment);
+    if (cleanComment === "") {
+      setError("Comment cannot be empty");
+      setTimeout(() => {
+        setError("");
+      }, 1000);
+      return;
+    }
     postComment(cleanComment, id);
+    reloadPage();
     // after submitting re-render the comments
   };
 
@@ -28,6 +37,7 @@ export default function AddComment({ id }: { id: string }) {
         variant="underlined"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
+        startContent={error && <p className="text-red-500">{error}</p>}
         endContent={
           <div className="flex gap-2">
             <Button

@@ -10,6 +10,8 @@ import {
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
 
+import DOMPurify from "dompurify";
+
 export async function postPost({ data }: { data: FormData }) {
   const supabase = await createSupabaseClient();
   const id = (await supabase.auth.getUser()).data.user?.id;
@@ -124,6 +126,7 @@ export async function getPost({ postId }: { postId: string }) {
         keywordsArray.push(cleanedKeyword);
       }
     }
+    // dompurify the content
 
     // append the created_at property at the top level
     newData.created_at = data[0].created_at;

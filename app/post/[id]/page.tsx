@@ -14,13 +14,14 @@ const dateOptions: Intl.DateTimeFormatOptions = {
   month: "long",
   day: "numeric",
 };
+import DOMPurify from "isomorphic-dompurify";
 
 export default async function PostPage({ params }: { params: { id: string } }) {
   const post = await getPost({ postId: params.id });
   const date = new Date(post.created_at);
   const formattedDate = date.toLocaleDateString("en-US", dateOptions);
   const currentUser = await checkIfPostBelongsToCurrentUser(params.id);
-
+  post.content = DOMPurify.sanitize(post.content);
   return (
     <div className="flex flex-col">
       <CustomNav />
