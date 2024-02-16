@@ -68,18 +68,17 @@ export async function getPosts(): Promise<Post[] | { error: string }> {
       // get the author's fullname using user_id
       const { data: userData, error: userError } = await supabase
         .from("user")
-        .select("fullName")
+        .select("user_name")
         .eq("user_id", post.user_id);
 
       if (userError) {
-        console.error("Error fetching user data:", userError);
+        console.error("Error fetching user data:", userError.message);
         throw new Error("Error fetching user data");
       }
 
-      newData.author = userData[0].fullName;
+      newData.author = userData[0].user_name;
       newData.keywords = keywordsArray;
       newData.post_id = post.post_id;
-
       return newData as Post; // Ensure the type is explicitly casted to Post
     })
   );
@@ -104,7 +103,7 @@ export async function getPost({ postId }: { postId: string }) {
   // get the fullname using user_id
   const { data: userData, error: userError } = await supabase
     .from("user")
-    .select("fullName")
+    .select("user_name")
     .eq("user_id", data[0].user_id);
 
   if (userError) {
@@ -130,7 +129,7 @@ export async function getPost({ postId }: { postId: string }) {
 
     // append the created_at property at the top level
     newData.created_at = data[0].created_at;
-    newData.author = userData[0].fullName;
+    newData.author = userData[0].user_name;
     newData.keywords = keywordsArray;
 
     return newData;
