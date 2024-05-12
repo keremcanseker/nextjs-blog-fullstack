@@ -35,15 +35,16 @@ export async function signUpWithEmail({
 }
 
 // GET SESSION
-export async function getUserSession() {
+export async function checkForSession() {
   const supabase = await createSupabaseClientForStart();
-  return await supabase.auth.getSession();
+  const session = await supabase.auth.getSession();
+  return !session;
 }
 
 // LOGOUT
 export async function logOut() {
   const supabase = await createSupabaseClient();
-
+  console.log("logging out");
   return await supabase.auth.signOut();
 }
 

@@ -20,15 +20,12 @@ body {
 }
 
 .main_wrapper {
-  @apply w-screen   h-auto min-h-screen flex justify-center  bg-[var(--background)] text-[var(--text)];
+  @apply w-screen h-auto min-h-screen flex justify-center  bg-[var(--background)] text-[var(--text)];
 }
 
 .home_wrapper {
   @apply flex flex-col mx-auto items-center w-screen h-auto;
 }
-/* .component_container {
-  @apply ;
-} */
 
 .home_test {
   @apply flex flex-col mx-auto items-center w-screen max-w-3xl px-4 h-auto;
@@ -50,7 +47,6 @@ body {
   @apply flex flex-col w-full h-full;
 }
 
-/* overwrite the class 1s to 0.8 seconds */
 .animate-spin {
   animation: spin 0.8s linear infinite;
 }

@@ -2,24 +2,24 @@
 import { Button, Link, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
-import { useThemeStore } from "@/app/utils/ThemeStore";
-import { useLogInStore } from "@/app/utils/LogInStore";
-import { signUpWithEmail } from "@/app/lib/auth/auth";
+import { useTheme } from "@/lib/hooks/useTheme";
+import { useLogin } from "@/lib/hooks/useLogin";
+import { signUpWithEmail } from "@/lib/auth/auth";
 import { useRouter } from "next/navigation";
 
 import {
   ToastContainerComponent,
   showToastError,
   showToastSuccess,
-} from "@/app/components/Toaster";
+} from "@/components/Toaster";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const { setRegister } = useLogInStore();
+  const { setRegister } = useLogin();
   const router = useRouter();
-  const { theme } = useThemeStore();
+  const { theme } = useTheme();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent the default form submission behavior

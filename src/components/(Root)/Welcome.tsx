@@ -1,10 +1,10 @@
 "use client";
 import { Image, Button, Link } from "@nextui-org/react";
-import { useLogInStore } from "@/app/utils/LogInStore";
+import { useLogin } from "@/lib/hooks/useLogin";
 import { useRouter } from "next/navigation";
 
 const Welcome: React.FC = () => {
-  const { register, setRegister } = useLogInStore();
+  const { register, setRegister } = useLogin();
 
   const router = useRouter();
   const handleClick = () => {
@@ -12,48 +12,43 @@ const Welcome: React.FC = () => {
     setRegister(!register);
   };
   return (
-    <section>
-      <section className="page_wrapper sm:flex-row flex-col items-center gap-10">
-        <div className="max-w-[300px]">
-          <Image
-            src="/image.png"
-            className="w-full shadow-2xl"
-            alt="hello"
-          ></Image>
-        </div>
-        <div className="flex flex-col items-center gap-6">
-          <h1 className="text-4xl  text-center">Welcome to the G Blog</h1>
+    <section className="gap-10 page_wrapper items-center">
+      <Image
+        src="/image.png"
+        width={300}
+        height={300}
+        className=" shadow-2xl"
+        alt="hello"
+      ></Image>
 
-          <Button
-            className="w-full text-lg"
-            color="primary"
-            radius="sm"
-            variant="shadow"
-            data-hover=""
-            onClick={handleClick}
-          >
-            Create account
-          </Button>
+      <div className="flex flex-col items-center gap-6">
+        <h1 className="text-4xl  text-center">Welcome to the G Blog</h1>
 
-          <div className="flex flex-col gap-2 w-full mt-6">
-            <h1 className=" ">Already have an account? </h1>
-            <Link
-              href="/signin"
-              className=""
-              onClick={() => setRegister(false)}
+        <Button
+          className="w-full text-lg"
+          color="primary"
+          radius="sm"
+          variant="shadow"
+          data-hover=""
+          onClick={handleClick}
+        >
+          Create account
+        </Button>
+
+        <div className="flex flex-col gap-2 w-full mt-6">
+          <h1 className=" ">Already have an account? </h1>
+          <Link href="/signin" className="" onClick={() => setRegister(false)}>
+            <Button
+              className="w-full text-lg"
+              color="primary"
+              radius="sm"
+              variant="shadow"
             >
-              <Button
-                className="w-full text-lg"
-                color="primary"
-                radius="sm"
-                variant="shadow"
-              >
-                Sign in
-              </Button>
-            </Link>
-          </div>
+              Sign in
+            </Button>
+          </Link>
         </div>
-      </section>
+      </div>
     </section>
   );
 };

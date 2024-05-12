@@ -22,7 +22,7 @@ export {
   IoArrowBack as Back,
   IoCreateOutline as Create,
   IoSend as Send,
-  RxAvatar as Avatar,
+  RxAvatar as AvatarIconLocal,
   CiLogout as Logout,
   AiFillHome as Home,
 };

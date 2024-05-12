@@ -1,10 +1,10 @@
-import { getUserSession } from "./lib/auth/auth";
-import Home from "./components/(Root)/Home";
-import Welcome from "./components/(Root)/Welcome";
+import { checkForSession } from "@/lib/auth/auth";
+import Home from "@/components/(Root)/Home";
+import Welcome from "@/components/(Root)/Welcome";
 
 const Page: React.FC = async () => {
-  const { data } = await getUserSession();
-  const Component = data.session ? <Home /> : <Welcome />;
+  const session = await checkForSession();
+  const Component = session ? <Home /> : <Welcome />;
   return <>{Component}</>;
 };
 

@@ -1,8 +1,6 @@
-import { getPosts } from "@/app/lib/actions/post";
+import { getPosts } from "@/lib/actions/post";
 import PostCard from "./PostCard";
-import Link from "next/link";
 import { randomBytes } from "crypto";
-import { Divider } from "@nextui-org/react";
 
 export default async function Posts() {
   const posts = (await getPosts()) as any[];
