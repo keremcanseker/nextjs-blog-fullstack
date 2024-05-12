@@ -1,12 +1,10 @@
 import { toast, Flip, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useThemeStore } from "@/app/utils/ThemeStore";
-
+import { Theme } from "@/types/theme";
 interface ToastProps {
   message: string;
   theme: string;
 }
-type Theme = "light" | "dark";
 
 const showToastSuccess = ({ message, theme }: ToastProps) => {
   toast.success(`${message}`, {

@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-interface LogInState {
+interface LoginState {
   register: boolean;
   setRegister: (register: boolean) => void;
 }
 
-export const useLogInStore = create<LogInState>((set) => ({
+export const useLoginStore = create<LoginState>((set) => ({
   register: false,
   setRegister: (register) => set({ register }),
 }));
