@@ -1,12 +1,11 @@
-"use server";
 import { getUserSession } from "./lib/auth/auth";
 import Home from "./components/(Root)/Home";
 import Welcome from "./components/(Root)/Welcome";
 
 const Page: React.FC = async () => {
   const { data } = await getUserSession();
-
-  return <>{data.session ? <Home /> : <Welcome />}</>;
+  const Component = data.session ? <Home /> : <Welcome />;
+  return <>{Component}</>;
 };
 
 export default Page;
