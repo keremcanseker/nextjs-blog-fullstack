@@ -5,7 +5,6 @@ const Home: React.FC = () => {
   return (
     <section className="home_test ">
       <CustomNav className="mb-4" />
-
       <Posts />
     </section>
   );

@@ -3,7 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Theme } from "@/types/theme";
 interface ToastProps {
   message: string;
-  theme: string;
+  theme: Theme;
 }
 
 const showToastSuccess = ({ message, theme }: ToastProps) => {

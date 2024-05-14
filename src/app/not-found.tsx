@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import "./globals.css";
+import { Button } from "@nextui-org/react";
+import "@/app/styles/globals.css";
 export default function NotFound() {
   const router = useRouter();
 
@@ -17,8 +18,8 @@ export default function NotFound() {
         moved.
       </p>
       <div className="mt-8 flex justify-center gap-2">
-        <button onClick={() => router.back()}>Go back</button>
-        <button onClick={() => router.push("/dashboard")}>Back to Home</button>
+        <Button onClick={() => router.back()}>Go back</Button>
+        <Button onClick={() => router.push("/")}>Back to Home</Button>
       </div>
     </div>
   );

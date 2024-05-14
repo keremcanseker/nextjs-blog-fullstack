@@ -1,5 +1,4 @@
 "use server";
-
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "../supabase/client";
@@ -37,14 +36,14 @@ export async function signUpWithEmail({
 // GET SESSION
 export async function checkForSession() {
   const supabase = await createSupabaseClientForStart();
-  const session = await supabase.auth.getSession();
-  return !session;
+  const { data } = await supabase.auth.getSession();
+  const session = data.session;
+  return !!session;
 }
 
 // LOGOUT
 export async function logOut() {
   const supabase = await createSupabaseClient();
-  console.log("logging out");
   return await supabase.auth.signOut();
 }
 

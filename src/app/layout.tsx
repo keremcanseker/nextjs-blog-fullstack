@@ -1,8 +1,10 @@
 "use client";
 import { UIProvider } from "@/components/UIProvider";
-import { inter } from "@/styles/fonts";
+import { ToastContainerComponent } from "@/components/Toaster";
+import { inter } from "@/app/styles/fonts";
 import { useTheme } from "@/lib/hooks/useTheme";
-import "./globals.css";
+import "@/app/styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import Script from "next/script";
 
 const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -10,6 +12,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <html lang="en">
       <body className={`${inter.className} main_wrapper ${theme}`}>
+        <ToastContainerComponent />
         <UIProvider>{children}</UIProvider>
         <Script
           src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"
