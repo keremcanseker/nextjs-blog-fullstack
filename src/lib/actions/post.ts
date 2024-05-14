@@ -9,8 +9,7 @@ import {
   PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
-
-import DOMPurify from "dompurify";
+import { Post } from "@/types/post";
 
 export async function postPost({ data }: { data: FormData }) {
   const supabase = await createSupabaseClient();
@@ -25,14 +24,7 @@ export async function postPost({ data }: { data: FormData }) {
     .single();
   return result;
 }
-export type Post = {
-  title: string;
-  content: string;
-  created_at: string;
-  image: string;
-  keywords: string[];
-  author: string;
-};
+
 export async function getPosts(): Promise<Post[] | { error: string }> {
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase

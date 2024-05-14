@@ -22,3 +22,12 @@ export const PostDataSchema: ZodType<PostData[]> = z.array(
     post_id: z.string(),
   })
 );
+
+export type Post = {
+  title: string;
+  content: string;
+  created_at: string;
+  image: string;
+  keywords: string[];
+  author: string;
+};

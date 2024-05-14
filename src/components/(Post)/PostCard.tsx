@@ -1,6 +1,5 @@
 import { Image, Chip } from "@nextui-org/react";
 import Link from "next/link";
-import { format } from "date-fns";
 
 interface PostCardProps {
   content: string;
@@ -27,8 +26,6 @@ export default function PostCard({
   createdAt,
   keywords,
 }: PostCardProps) {
-  // const imageUrl = image.toLowerCase();
-
   const date = new Date(createdAt);
   const formattedDate = date.toLocaleDateString("en-US", dateOptions);
   return (
