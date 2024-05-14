@@ -15,12 +15,17 @@ function getDefaultTheme() {
 }
 
 export function useTheme() {
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme: setThemeStore } = useThemeStore();
 
   useEffect(() => {
     const defaultTheme = getDefaultTheme();
-    setTheme(defaultTheme);
-  }, [setTheme]);
+    setThemeStore(defaultTheme);
+  }, [setThemeStore]);
+
+  const setTheme = (selectedTheme: Theme) => {
+    localStorage.setItem("theme", selectedTheme);
+    setThemeStore(selectedTheme);
+  };
 
   return { theme, setTheme };
 }

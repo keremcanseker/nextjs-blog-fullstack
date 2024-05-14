@@ -1,9 +1,8 @@
-import "@/app/styles/globals.css";
-import Posts from "../(Post)/Posts";
-import CustomNav from "../CustomNav";
+import Posts from "@/components/(Post)/Posts";
+import CustomNav from "@/components/CustomNav";
 const Home: React.FC = () => {
   return (
-    <section className="home_test ">
+    <section className="home_test">
       <CustomNav className="mb-4" />
       <Posts />
     </section>

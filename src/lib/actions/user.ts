@@ -1,10 +1,9 @@
 "use server";
 import { UserFormData } from "@/app/profile/edit/types";
-import { getUserIdFromCurrentSession } from "../auth/auth";
+import { checkForSession, getUserIdFromCurrentSession } from "@/lib/auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
-} from "../supabase/client";
-import { PostData, PostDataSchema } from "@/app/types/post";
+} from "@/lib/supabase/client";
 
 //unused
 export async function createUser({ data }: { data: any }) {
@@ -109,6 +108,10 @@ export async function getUserPosts() {
 }
 
 export async function getUserProfileImage() {
+  const session = await checkForSession();
+  if (!session) {
+    return null;
+  }
   const userId = await getUserIdFromCurrentSession();
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
