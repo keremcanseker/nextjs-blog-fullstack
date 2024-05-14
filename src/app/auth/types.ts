@@ -16,6 +16,6 @@ export const loginSchema: ZodType<Login> = z.object({
 });
 export const registerSchema: ZodType<Register> = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
-  username: z.string().min(4),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+  username: z.string().min(4, "Username must be at least 4 characters long"),
 });
