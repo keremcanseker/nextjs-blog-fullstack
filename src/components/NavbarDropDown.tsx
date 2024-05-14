@@ -7,13 +7,13 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { AvatarIconLocal, Create, Logout, Sun, Moon } from "@/components/Icons";
-import { useThemeStore } from "@/lib/stores/useThemeStore";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUserProfileImage } from "@/lib/actions/user";
 import { logOut } from "@/lib/auth/auth";
+import { useTheme } from "@/lib/hooks/useTheme";
 export default function NavbarDropDown() {
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme } = useTheme();
   const [profileImage, setProfileImage] = useState<string | undefined>(
     undefined
   );
@@ -31,9 +31,9 @@ export default function NavbarDropDown() {
 
   const themeIcon =
     theme === "dark" ? (
-      <Sun className="text-2xl"></Sun>
-    ) : (
       <Moon className="text-2xl"></Moon>
+    ) : (
+      <Sun className="text-2xl"></Sun>
     );
   useEffect(() => {
     handleProfilePic();

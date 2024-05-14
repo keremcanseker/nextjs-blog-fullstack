@@ -5,28 +5,25 @@ import { signInWithEmail } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 import { showToastError } from "@/components/Toaster";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 export default function SigninForm() {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      const result = await signInWithEmail({ email, password });
-      const response = JSON.parse(result);
-      if (!response.message) {
-        redirect("/");
-      }
 
-      showToastError({ message: response.message, theme: theme });
-    } catch {
-      showToastError({
-        message: "Something is wrong with server please try again.",
-        theme: theme,
-      });
+    const result = await signInWithEmail({ email, password });
+    console.log(result); // Check the structure of result
+    if (result.success) {
+      router.push("/");
+    }
+    if (result.error) {
+      showToastError({ message: "Failed Login", theme: theme });
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
       <Input

@@ -60,14 +60,10 @@ export async function signInWithEmail({
     email,
     password,
   });
-  // console.log(result);
-
   if (result.error) {
-    // console.log(result.error.message);
-    return JSON.stringify(result.error);
+    return { error: result.error.message };
   }
-  // console.log(result.error?.error);
-  return JSON.stringify(result);
+  return { success: true };
 }
 
 // get user data with id
