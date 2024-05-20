@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --text: #000000;
+    --background: #ffffff;
+    --primary: #e7e6e6;
+    --accent: #0070f0;
+  }
+  .dark {
+    --text: #ffffff;
+    --background: #000000;
+    --primary: #333333;
+    --accent: #00067f;
+  }
+}
+body {
+  @apply overflow-x-hidden antialiased;
+}
+
+.main_wrapper {
+  @apply w-screen h-auto min-h-screen flex justify-center  bg-[var(--background)] text-[var(--text)];
+}
+
+.home_wrapper {
+  @apply flex flex-col mx-auto items-center w-screen h-auto;
+}
+
+.home_test {
+  @apply flex flex-col mx-auto items-center w-screen max-w-3xl px-4 h-auto;
+}
+
+.page_wrapper {
+  @apply mx-auto flex justify-center p-6 w-full h-screen max-w-[850px];
+}
+
+.create_post_wrapper {
+  @apply mx-auto w-full h-screen items-center flex flex-col;
+}
+
+.component_outer {
+  @apply flex flex-col w-full h-full;
+}
+
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+.form_wrapper {
+  @apply flex justify-center p-10  w-screen h-screen max-w-[650px];
+}
