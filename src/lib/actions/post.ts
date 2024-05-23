@@ -1,15 +1,16 @@
 "use server";
-import { getUserIdFromCurrentSession } from "../auth/auth";
+import { getUserIdFromCurrentSession } from "@/lib/auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
-} from "../supabase/client";
+} from "@/lib/supabase/client";
+import { parsePostContent, getAuthorName } from "@/lib/actions/helpers";
 
 import {
   S3Client,
   PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
-import { Post } from "@/types/post";
+import { CompletePostData, PostArraySchema } from "@/types/post";
 
 export async function postPost({ data }: { data: FormData }) {
   const supabase = await createSupabaseClient();
@@ -25,7 +26,9 @@ export async function postPost({ data }: { data: FormData }) {
   return result;
 }
 
-export async function getPosts(): Promise<Post[] | { error: string }> {
+export async function getPosts(): Promise<
+  CompletePostData[] | { error: string }
+> {
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
     .from("post")
@@ -34,48 +37,37 @@ export async function getPosts(): Promise<Post[] | { error: string }> {
     .eq("public", true);
 
   if (error) {
-    // Handle the error, for example, log it or throw an exception
-    return {
-      error: "Error fetching data",
-    };
+    console.error("Error fetching posts:", error);
+    return { error: "Error fetching data" };
   }
 
-  const postsWithKeywords = await Promise.all(
-    data.map(async (post) => {
-      // parse the content to JSON
-      let newData = JSON.parse(post.content);
+  const parsedData = PostArraySchema.safeParse(data);
+  if (!parsedData.success) {
+    console.error("Error parsing post data:", parsedData.error.errors);
+    return { error: "Error parsing data" };
+  }
 
-      // Extract keywords from newData and add them to an array
-      const keywordsArray = [];
-      for (const key in newData) {
-        if (key.startsWith("keywords[") && typeof newData[key] === "string") {
-          const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
-          keywordsArray.push(cleanedKeyword);
-        }
+  const completePosts = await Promise.all(
+    parsedData.data.map(async (post) => {
+      try {
+        const parsedContent = await parsePostContent(post.content);
+        const completePostData: CompletePostData = {
+          ...parsedContent,
+          created_at: post.created_at,
+          author: await getAuthorName(supabase, post.user_id),
+          keywords: parsedContent.keywords,
+          post_id: post.post_id,
+        };
+
+        return completePostData;
+      } catch (error) {
+        console.error("Error processing post:", error);
+        throw new Error("Error processing post data");
       }
-
-      // append the created_at property at the top level
-      newData.created_at = post.created_at;
-
-      // get the author's fullname using user_id
-      const { data: userData, error: userError } = await supabase
-        .from("user")
-        .select("user_name")
-        .eq("user_id", post.user_id);
-
-      if (userError) {
-        console.error("Error fetching user data:", userError.message);
-        throw new Error("Error fetching user data");
-      }
-
-      newData.author = userData[0].user_name;
-      newData.keywords = keywordsArray;
-      newData.post_id = post.post_id;
-      return newData as Post; // Ensure the type is explicitly casted to Post
     })
   );
 
-  return postsWithKeywords;
+  return completePosts;
 }
 
 export async function getPost({ postId }: { postId: string }) {
