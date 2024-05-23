@@ -82,15 +82,13 @@ export async function getUserIdFromCurrentSession() {
 }
 
 export async function checkIfPostBelongsToCurrentUser(post_id: string) {
-  console.log("check if post belongs to current user");
   const supabase = await createSupabaseClientForStart();
   const user_id = await getUserIdFromCurrentSession();
-  // check if post belongs to current user
   const { data, error } = await supabase
     .from("post")
-    .select("*")
+    .select("user_id")
     .eq("post_id", post_id);
-  // console.log(data);
+
   if (error) {
     console.log(error.message);
     return false;

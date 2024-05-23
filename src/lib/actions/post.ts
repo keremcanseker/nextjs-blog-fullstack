@@ -3,14 +3,18 @@ import { getUserIdFromCurrentSession } from "@/lib/auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "@/lib/supabase/client";
-import { parsePostContent, getAuthorName } from "@/lib/actions/helpers";
+import {
+  parsePostContent,
+  getAuthorName,
+  formatDate,
+} from "@/lib/actions/helpers";
 
 import {
   S3Client,
   PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
-import { CompletePostData, PostArraySchema } from "@/types/post";
+import { CompletePostData, PostArraySchema, PostSchema } from "@/types/post";
 
 export async function postPost({ data }: { data: FormData }) {
   const supabase = await createSupabaseClient();
@@ -75,7 +79,7 @@ export async function getPost({ postId }: { postId: string }) {
 
   const { data, error } = await supabase
     .from("post")
-    .select("content, created_at, user_id")
+    .select("*")
     .eq("post_id", postId);
 
   if (error) {
@@ -83,45 +87,23 @@ export async function getPost({ postId }: { postId: string }) {
     console.error("Error fetching data:", error);
     throw new Error("Error fetching data");
   }
-
-  // get the fullname using user_id
-  const { data: userData, error: userError } = await supabase
-    .from("user")
-    .select("user_name")
-    .eq("user_id", data[0].user_id);
-
-  if (userError) {
-    console.log(userData);
-    console.error("Error fetching user data:", userError);
-    throw new Error("Error fetching user data");
+  const parsedData = PostSchema.safeParse(data[0]);
+  if (!parsedData.success) {
+    console.error("Error parsing post data:", parsedData.error.errors);
+    throw new Error("Error parsing post data");
   }
 
-  // Check if data is not null before accessing its properties
-  if (data && data.length > 0 && data[0].content) {
-    // parse the data to JSON
-    let newData = JSON.parse(data[0].content);
+  const post = parsedData.data;
+  const parsedContent = await parsePostContent(post.content);
+  const completePostData: CompletePostData = {
+    ...parsedContent,
+    created_at: formatDate(new Date(post.created_at)),
+    author: await getAuthorName(supabase, post.user_id),
+    keywords: parsedContent.keywords,
+    post_id: post.post_id,
+  };
 
-    // Extract keywords from newData and add them to an array
-    const keywordsArray = [];
-    for (const key in newData) {
-      if (key.startsWith("keywords[") && typeof newData[key] === "string") {
-        const cleanedKeyword = newData[key].replace(/[^a-zA-Z ]/g, "");
-        keywordsArray.push(cleanedKeyword);
-      }
-    }
-    // dompurify the content
-
-    // append the created_at property at the top level
-    newData.created_at = data[0].created_at;
-    newData.author = userData[0].user_name;
-    newData.keywords = keywordsArray;
-
-    return newData;
-  } else {
-    // Handle the case where data is null or empty
-    console.error("No data found for postId:", postId);
-    throw new Error("No data found");
-  }
+  return completePostData;
 }
 
 export async function getImageLinkforProfile({

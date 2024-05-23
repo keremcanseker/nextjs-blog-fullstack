@@ -1,4 +1,6 @@
 import { PostContent, PostContentSchema } from "@/types/post";
+import DOMPurify from "isomorphic-dompurify";
+
 export const formatDate = (date: Date) => {
   return new Date(date)
     .toLocaleDateString("en-US", {
@@ -30,7 +32,6 @@ export async function getAuthorName(
 
 export async function parsePostContent(content: string): Promise<PostContent> {
   const parsedJSON = JSON.parse(content);
-  console.log("Parsed JSON content:", parsedJSON);
 
   // Transform keywords to array
   const keywordsArray: string[] = [];
@@ -43,11 +44,17 @@ export async function parsePostContent(content: string): Promise<PostContent> {
   parsedJSON.keywords = keywordsArray;
 
   const parsedContent = PostContentSchema.safeParse(parsedJSON);
-  console.log("SafeParse result:", parsedContent);
 
   if (!parsedContent.success) {
     console.error("Error parsing post content:", parsedContent.error.errors);
     throw new Error("Error parsing post content");
   }
+  const sanitizedContent = sanitizeContent(parsedContent.data.content);
+  parsedContent.data.content = sanitizedContent;
   return parsedContent.data;
+}
+
+export function sanitizeContent(content: string): string {
+  const sanitizedContent = DOMPurify.sanitize(content);
+  return sanitizedContent;
 }
