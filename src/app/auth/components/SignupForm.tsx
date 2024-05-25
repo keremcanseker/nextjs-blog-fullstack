@@ -1,67 +1,88 @@
 "use client";
 import { showToastError, showToastSuccess } from "@/components/Toaster";
 import { Button, Input } from "@nextui-org/react";
-import { useTheme } from "@/lib/hooks/useTheme";
+import { useTheme } from "next-themes";
+import { Theme } from "@/types/theme";
 import { signUpWithEmail } from "@/lib/auth/auth";
-import { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useForm, SubmitHandler } from "react-hook-form";
+import type { SignupForm } from "@/types/auth-forms";
 
 export default function SignupForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupForm>();
   const { theme } = useTheme();
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const router = useRouter();
+  const onSubmit: SubmitHandler<SignupForm> = async (data) => {
     try {
-      const result = await signUpWithEmail({
-        email,
-        password,
-        username: userName,
-      });
+      const result = await signUpWithEmail(data);
       const response = JSON.parse(result);
-      // if there is no error show success toast
+
       if (!response.message) {
-        showToastSuccess({ message: "Registeration successful", theme: theme });
+        showToastSuccess({
+          message: "Registration successful",
+          theme: theme as Theme,
+        });
         setTimeout(() => {
-          redirect("/auth/sign-in");
+          router.push("/auth/sign-in");
         }, 1500);
       } else {
-        showToastError({
-          message: response.error.message || "Registration failed",
-          theme: theme,
-        });
+        throw new Error(response.error.message || "Registration failed");
       }
     } catch (error) {
-      showToastError({ message: "Registeration failed", theme: theme });
+      showToastError({
+        message: "Server error, please try again later",
+        theme: theme as Theme,
+      });
     }
   };
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(onSubmit)();
+  };
+
+  const buttonLabel = isSubmitting ? "Signing up..." : "Sign Up";
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <Input
         type="username"
         label="Username"
         radius="sm"
         className="mb-6"
-        value={userName}
-        onChange={(ev) => setUserName(ev.target.value)}
+        {...register("username", { required: "Username is required" })}
+        errorMessage={errors.username?.message}
       />
       <Input
         type="email"
         label="Email"
         radius="sm"
         className="mb-6"
-        value={email}
-        onChange={(ev) => setEmail(ev.target.value)}
+        errorMessage={errors.email?.message}
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+            message: "Email is not valid",
+          },
+        })}
       />
       <Input
         type="password"
         label="Password"
         radius="sm"
         className="mb-1"
-        value={password}
-        onChange={(ev) => setPassword(ev.target.value)}
+        errorMessage={errors.password?.message}
+        {...register("password", {
+          required: "Password is required",
+          minLength: {
+            value: 6,
+            message: "Password must be at least 6 characters long",
+          },
+        })}
       />
       <Button
         className="mt-4 text-xl w-full"
@@ -70,7 +91,7 @@ export default function SignupForm() {
         color="primary"
         radius="sm"
       >
-        Register
+        {buttonLabel}
       </Button>
     </form>
   );
