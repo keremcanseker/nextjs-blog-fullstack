@@ -60,7 +60,7 @@ export default function NavbarDropDown() {
           Profile
         </DropdownItem>
         <DropdownItem
-          href="/post/createnew
+          href="/post/create
             "
           endContent={<Create className="text-2xl"></Create>}
           key="new"

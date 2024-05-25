@@ -14,20 +14,40 @@ import {
   PutObjectCommand,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3";
-import { CompletePostData, PostArraySchema, PostSchema } from "@/types/post";
+import {
+  CompletePostData,
+  PostArraySchema,
+  PostContent,
+  PostSchema,
+} from "@/types/post";
+import { sanitizeContent } from "@/lib/utils/helpers";
 
-export async function postPost({ data }: { data: FormData }) {
+export async function createPost({ data }: { data: PostContent }) {
   const supabase = await createSupabaseClient();
-  const id = (await supabase.auth.getUser()).data.user?.id;
-  // console.log(id);
-  const result = supabase
-    .from("post")
-    .insert({
-      content: JSON.stringify(Object.fromEntries(data)),
-      user_id: id,
+  const id = await getUserIdFromCurrentSession();
+  if (!id) {
+    return { success: false };
+  }
+
+  // Sanitize each field of the data object
+  const sanitizedData: PostContent = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => {
+      if (typeof value === "string") {
+        return [key, sanitizeContent(value)];
+      } else {
+        return [key, value];
+      }
     })
-    .single();
-  return result;
+  );
+
+  const postData = {
+    content: JSON.stringify(sanitizedData), // Stringify the entire sanitizedData object
+    user_id: id,
+  };
+
+  const result = await supabase.from("post").insert(postData).single();
+  const success = result.statusText === "Created";
+  return success ? { success: true } : { success: false };
 }
 
 export async function getPosts(): Promise<

@@ -12,11 +12,20 @@ const PostSchema = z.object({
 });
 
 const PostContentSchema = z.object({
-  title: z.string(),
-  summary: z.string(),
+  title: z
+    .string()
+    .min(4, { message: "Title must be at least 4 characters long" })
+    .max(50, { message: "Title must be less than 50 characters long" }),
+  summary: z
+    .string()
+    .min(10, { message: "Keywords must be at least 10 characters long" })
+    .max(150, { message: "Keywords must be less than 150 characters long" }),
   image: z.string(),
   content: z.string(),
-  keywords: z.array(z.string()),
+  keywords: z.union([
+    z.array(z.string().min(3).max(20)),
+    z.string().min(3).max(20),
+  ]),
 });
 
 const PostArraySchema = z.array(PostSchema);
