@@ -7,7 +7,7 @@ import { checkIfPostBelongsToCurrentUser } from "@/lib/auth/auth";
 import DOMPurify from "isomorphic-dompurify";
 
 export default async function PostPage({ params }: { params: { id: string } }) {
-  if (!params.id) return null;
+  if (!params.id || params.id === "x") return null;
   const postData = await getPost({ postId: params.id });
   if (!postData) return null;
   const isPostOwner = await checkIfPostBelongsToCurrentUser(postData.post_id);
