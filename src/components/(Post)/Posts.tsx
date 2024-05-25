@@ -1,4 +1,4 @@
-import { getPosts } from "@/lib/actions/post";
+import { getPosts } from "@/lib/utils/server-actions/post";
 import PostCard from "@/components/(Post)/PostCard";
 import { CompletePostData } from "@/types/post";
 export default async function Posts() {

@@ -2,7 +2,7 @@ import { Divider, Image, Chip, Button } from "@nextui-org/react";
 import { Edit, Visibility, Delete } from "@/components/Icons";
 import CustomNav from "@/components/CustomNav";
 import Link from "next/link";
-import { getPost } from "@/lib/actions/post";
+import { getPost } from "@/lib/utils/server-actions/post";
 import { checkIfPostBelongsToCurrentUser } from "@/lib/auth/auth";
 import DOMPurify from "isomorphic-dompurify";
 

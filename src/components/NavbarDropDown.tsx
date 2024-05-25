@@ -9,7 +9,7 @@ import {
 import { AvatarIconLocal, Create, Logout, Sun, Moon } from "@/components/Icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getUserProfileImage } from "@/lib/actions/user";
+import { getUserProfileImage } from "@/lib/utils/server-actions/user";
 import { logOut } from "@/lib/auth/auth";
 import { useTheme } from "next-themes";
 export default function NavbarDropDown() {

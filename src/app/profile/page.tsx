@@ -1,6 +1,6 @@
 import { Link, Image } from "@nextui-org/react";
 import CustomNav from "@/components/CustomNav";
-import { getUserProfileData } from "@/lib/actions/user";
+import { getUserProfileData } from "@/lib/utils/server-actions/user";
 
 export default async function Profile() {
   const userProfile = await getUserProfileData();

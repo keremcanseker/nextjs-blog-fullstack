@@ -7,7 +7,7 @@ import {
   parsePostContent,
   getAuthorName,
   formatDate,
-} from "@/lib/actions/helpers";
+} from "@/lib/utils/helpers";
 
 import {
   S3Client,

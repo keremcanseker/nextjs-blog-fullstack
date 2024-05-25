@@ -1,6 +1,6 @@
 import { Image, Chip } from "@nextui-org/react";
 import { CompletePostData } from "@/types/post";
-import { formatDate } from "@/lib/actions/helpers";
+import { formatDate } from "@/lib/utils/helpers";
 import Link from "next/link";
 
 interface PostCardProps {
