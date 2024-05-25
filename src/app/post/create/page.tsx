@@ -7,24 +7,24 @@ import {
   CircularProgress,
   Chip,
 } from "@nextui-org/react";
-import { set, useForm } from "react-hook-form";
-import { createPost, createPostSchema } from "../types";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getImageLink } from "@/app/lib/actions/post";
-import { BsUpload } from "react-icons/bs";
-import { useRef, useEffect, useState } from "react";
+import { getImageLink } from "@/lib/utils/server-actions/post";
+import { Upload } from "@/components/Icons";
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-
-import { formatDate } from "@/app/lib/actions/helpers";
-import { getUserProfileName } from "@/app/lib/actions/user";
-import { postPost } from "@/app/lib/actions/post";
-import { showToastError, showToastSuccess } from "@/app/components/Toaster";
-import { useThemeStore } from "@/app/utils/ThemeStore";
+import { textEditorOptions } from "@/lib/config/options";
+import { createPost } from "@/lib/utils/server-actions/post";
+import { formatDate } from "@/lib/utils/helpers";
+import { showToastError, showToastSuccess } from "@/components/Toaster";
+import "react-quill/dist/quill.snow.css";
+import { PostContent, PostContentSchema } from "@/types/post";
+import { useTheme } from "next-themes";
+import { Theme } from "@/types/theme";
+import useAuthorName from "@/lib/hooks/useAuthorName";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-// import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import DOMPurify from "dompurify";
 export default function Page() {
   const {
     register,
@@ -32,11 +32,16 @@ export default function Page() {
     setValue,
     formState: { errors, isSubmitting },
     watch,
-  } = useForm<createPost>({
-    resolver: zodResolver(createPostSchema),
+  } = useForm<PostContent>({
+    resolver: zodResolver(PostContentSchema),
   });
-  const { theme } = useThemeStore();
 
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
+  const { theme } = useTheme();
+  const { authorname } = useAuthorName();
+  const router = useRouter();
+  const watchedFields = watch();
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const data = new FormData();
@@ -62,63 +67,37 @@ export default function Page() {
       "image/jpg": [".jpg"],
       "image/jpeg": [".jpeg"],
     },
+    maxSize: 5242880,
   });
 
-  const watchedFields = watch();
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageLoading, setImageLoading] = useState(false);
-  const [authorname, setAuthorname] = useState("");
-
-  const handlePostSubmit = async (data: createPost) => {
-    const keywordsArray = data.keywords
-      .split(" ")
-      .filter((keyword) => keyword.trim() !== "");
-
-    const sanitizedContent = DOMPurify.sanitize(data.content || "");
-    // Create a FormData instance
-    const formData = new FormData();
-
-    // Append your data to the FormData instance
-    formData.append("title", data.title);
-    formData.append("summary", data.summary);
-    formData.append("image", data.image);
-    formData.append("content", sanitizedContent); // Optional, depends on your API
-
-    // Append each keyword individually
-    keywordsArray.forEach((keyword, index) => {
-      formData.append(`keywords[${index}]`, keyword);
-    });
-
+  const handlePostSubmit = async (data: PostContent) => {
     try {
-      const response = await postPost({ data: formData });
-      showToastSuccess({ message: "Post created successfully", theme: theme });
+      const response = await createPost({ data });
+      if (!response.success) {
+        showToastError({
+          message: "Error creating post",
+          theme: theme as Theme,
+        });
+        return;
+      }
+      showToastSuccess({
+        message: "Post created successfully",
+        theme: theme as Theme,
+      });
+      router.push(`/profile`);
     } catch (error) {
-      showToastError({ message: "Error creating post", theme: theme });
+      showToastError({ message: "Error creating post", theme: theme as Theme });
+      console.error("Error creating post:", error);
     }
   };
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      ["clean"],
-      ["code-block"],
-    ],
+
+  const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const keywordsString = e.target.value;
+    const keywordsArray = keywordsString
+      .split(" ")
+      .filter((keyword) => keyword.trim() !== "");
+    setValue("keywords", keywordsArray);
   };
-
-  useEffect(() => {
-    const fetchAuthorName = async () => {
-      try {
-        const name = await getUserProfileName();
-        setAuthorname(name);
-      } catch (error) {
-        console.error("Error fetching author name:", error);
-      }
-    };
-
-    fetchAuthorName();
-  }, []);
 
   return (
     <section
@@ -145,7 +124,7 @@ export default function Page() {
             ) : (
               <p className="text-lg">
                 Drop or click to upload an image
-                <BsUpload size="1.5rem" className="inline-block ml-2" />
+                <Upload size="1.5rem" className="inline-block ml-2" />
               </p>
             )}
           </div>
@@ -173,6 +152,7 @@ export default function Page() {
           placeholder="Put a space between each keyword"
           labelPlacement="outside"
           className=""
+          onChange={handleKeywordsChange}
         ></Input>
         <Textarea
           label="Summurize the content of your post(this will not be shown in the post)"
@@ -190,7 +170,7 @@ export default function Page() {
           onChange={(value) => setValue("content", value)}
           className="h-[30rem] overflow-y-auto"
           placeholder="Write your content here"
-          modules={modules}
+          modules={textEditorOptions}
         ></ReactQuill>
 
         {errors.content?.message && (
@@ -228,8 +208,9 @@ export default function Page() {
         )}
         {/* map through key words */}
         <div className="flex flex-wrap gap-2">
-          {watchedFields.keywords?.length > 0 &&
-            watchedFields.keywords.split(" ").map((keyword, index) => (
+          {watchedFields.keywords &&
+            Array.isArray(watchedFields.keywords) &&
+            watchedFields.keywords.map((keyword, index) => (
               <Chip
                 key={index}
                 color="secondary"

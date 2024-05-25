@@ -4,6 +4,8 @@ import { checkForSession, getUserIdFromCurrentSession } from "@/lib/auth/auth";
 import createSupabaseClient, {
   createSupabaseClientForStart,
 } from "@/lib/supabase/client";
+import { z } from "zod";
+import { ProfileDataSchema, ProfileData } from "@/types/user";
 
 //unused
 export async function createUser({ data }: { data: any }) {
@@ -55,7 +57,7 @@ export async function updateUser(data: UserFormData) {
   };
 }
 
-export async function getUserProfile() {
+export async function getUserProfileData() {
   const userId = await getUserIdFromCurrentSession();
   const supabase = await createSupabaseClientForStart();
   const { data, error } = await supabase
@@ -66,18 +68,17 @@ export async function getUserProfile() {
 
   if (error) {
     console.log(error.message);
-    return JSON.stringify(error);
+    return { error: error.message.toLowerCase() };
   }
-  // If data is null, assign an empty object
-  const userData = data || {};
+  // Parse the data with Zod
+  const parseResult = ProfileDataSchema.safeParse(data);
 
-  // If the properties are null, assign an empty string
-  userData.user_name = userData.user_name || "";
-  userData.profile_pic = userData.profile_pic || "";
-  userData.fullName = userData.fullName || "";
-  userData.bio = userData.bio || "";
-
-  return userData;
+  if (!parseResult.success) {
+    console.error(parseResult.error.errors);
+    return { error: "Invalid profile data" };
+  }
+  const userData: ProfileData = parseResult.data;
+  return { data: userData };
 }
 //: Promise<PostData[]>
 export async function getUserPosts() {

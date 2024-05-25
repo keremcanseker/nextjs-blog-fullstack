@@ -1,5 +1,5 @@
 "use server";
-import createSupabaseClient from "../supabase/client";
+import createSupabaseClient from "../../supabase/client";
 export async function postComment(comment: string, postId: string) {
   const supabase = await createSupabaseClient();
   const id = (await supabase.auth.getUser()).data.user?.id;

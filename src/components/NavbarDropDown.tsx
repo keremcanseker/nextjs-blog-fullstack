@@ -9,9 +9,9 @@ import {
 import { AvatarIconLocal, Create, Logout, Sun, Moon } from "@/components/Icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getUserProfileImage } from "@/lib/actions/user";
+import { getUserProfileImage } from "@/lib/utils/server-actions/user";
 import { logOut } from "@/lib/auth/auth";
-import { useTheme } from "@/lib/hooks/useTheme";
+import { useTheme } from "next-themes";
 export default function NavbarDropDown() {
   const { theme, setTheme } = useTheme();
   const [profileImage, setProfileImage] = useState<string | undefined>(
@@ -60,7 +60,7 @@ export default function NavbarDropDown() {
           Profile
         </DropdownItem>
         <DropdownItem
-          href="/post/createnew
+          href="/post/create
             "
           endContent={<Create className="text-2xl"></Create>}
           key="new"
